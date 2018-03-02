@@ -36,7 +36,6 @@ Generate a license:
 
 ```
 $ license.sh mit
-
 ```
 
 or rename a default LICENSE name:
