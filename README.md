@@ -10,23 +10,23 @@ An opensource software license generator written in shell script and powered by 
 
 ## Prerequisite
 
-+ bash
-+ curl
-+ jq
-+ sed
++ `bash`
++ `curl`
++ `jq`
++ `sed`
 
 ## Installation
 
 You can get this program with `git`:
 
-```shell
-git clone https://github.com/ishbguy/license
+```
+$ git clone https://github.com/ishbguy/license
 ```
 
 or only download the `license.sh`:
 
-```shell
-curl -fLo license.sh \
+```
+$ curl -fLo license.sh \
          https://raw.githubusercontent.com/ishbguy/license/master/license.sh
 ```
 
@@ -34,21 +34,21 @@ curl -fLo license.sh \
 
 Generate a license:
 
-```shell
-license.sh mit
+```
+$ license.sh mit
 
 ```
 
 or rename a default LICENSE name:
 
-```shell
-license.sh -o LICENSE.txt mit
+```
+$ license.sh -o LICENSE.txt mit
 ```
 
 or specify the year and the author name:
 
-```shell
-license.sh -y 2018 -n "Herbert Shen" mit
+```
+$ license.sh -y 2018 -n "Herbert Shen" mit
 ```
 
 ## Contributing
