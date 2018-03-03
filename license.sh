@@ -2,7 +2,7 @@
 # Copyright (c) 2018 Herbert Shen <ishbguy@hotmail.com> All Rights Reserved.
 # Released under the terms of the MIT License.
 
-#set -x
+set -x
 
 function die()
 {
@@ -86,6 +86,7 @@ NEED_LICENSE=$1
 [[ -d ${LICENSE_DIR} ]] || mkdir -p ${LICENSE_DIR} || die "Can not create LICENSE_DIR."
 
 [[ -e ${LICENSE_DIR}/${NEED_LICENSE} ]] || download_licenses ${API_URL} ${LICENSE_DIR}
+[[ -e ${LICENSE_DIR}/${NEED_LICENSE} ]] || die "Can not download ${NEED_LICENSE}."
 
 cp ${LICENSE_DIR}/${NEED_LICENSE} ${OUT_LICENSE}
 
