@@ -50,7 +50,7 @@ OUT_LICENSE=LICENSE
 PROGRAM=$(basename $0)
 VERSION="v0.0.1"
 HELP="
-${PROGRAM} [-o|n|y|d|h] [string] license_name\n
+${PROGRAM} [-o|n|y|d|l|v|h] [string] license_name\n
     -o  Use the string as the output name.\n
     -n  Use the string as the author name.\n
     -y  Use the string as the year of the license.\n
