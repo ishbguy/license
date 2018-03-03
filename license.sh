@@ -35,8 +35,10 @@ function download_licenses()
 
     for URL in $(curl ${API} 2>/dev/null | jq -r '.[].url'); do
         LICENSE=$(basename $URL)
-        curl ${URL} 2>/dev/null | jq -r '.body' >${DIR}/${LICENSE}
-    done
+        # get licenses in backgroup and wait jobs finish
+        curl ${URL} 2>/dev/null | jq -r '.body' >${DIR}/${LICENSE} &
+    done 2>/dev/null
+    wait 2>/dev/null
 }
 
 API_URL="https://api.github.com/licenses"
