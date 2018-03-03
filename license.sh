@@ -20,15 +20,14 @@ function check_arg()
 {
     local EXPECT=$1
     local ACTUAL=$2
-    local FUNC_NAME=$3
 
-    [[ $# -ne 3 ]] && die "${FUNCNAME}() args error."
-    [[ ${EXPECT} -ne ${ACTUAL} ]] && die "${FUNC_NAME} args error."
+    [[ $# -ne 2 ]] && die "${FUNCNAME[0]}() args error."
+    [[ ${EXPECT} -ne ${ACTUAL} ]] && die "${FUNCNAME[1]}() args error."
 }
 
 function download_licenses()
 {
-    check_arg 2 $# "${FUNCNAME}()"
+    check_arg 2 $#
 
     local API=$1
     local DIR=$2
