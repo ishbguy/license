@@ -51,6 +51,18 @@ or specify the year and the author name:
 $ license.sh -y 2018 -n ishbguy mit
 ```
 
+or specify a license directory:
+
+```
+$ license.sh -d lic mit
+```
+
+list all available licenses:
+
+```
+$ license.sh -l
+```
+
 ## Contributing
 
 1. Fork it
