@@ -12,7 +12,7 @@ function die()
 
 function check_bin()
 {
-    for NEED in $@; do
+    for NEED in "$@"; do
         which ${NEED} 2>&1 >/dev/null || die "You need to install ${NEED}"
     done
 }
@@ -63,7 +63,7 @@ ${PROGRAM} [-o|n|y|d|l|v|h] [string] license_name\n
 ${PROGRAM} ${VERSION} is released under the terms of the MIT License.\n
 "
 
-check_bin ${PREQUEST_BIN[@]}
+check_bin "${PREQUEST_BIN[@]}"
 
 OPTIND=1
 while getopts "o:n:y:d:lvh" OPTION; do
