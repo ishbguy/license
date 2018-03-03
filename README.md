@@ -47,7 +47,7 @@ $ license.sh -o LICENSE.txt mit
 or specify the year and the author name:
 
 ```
-$ license.sh -y 2018 -n "Herbert Shen" mit
+$ license.sh -y 2018 -n ishbguy mit
 ```
 
 ## Contributing
