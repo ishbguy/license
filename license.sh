@@ -91,3 +91,5 @@ cp ${LICENSE_DIR}/${NEED_LICENSE} ${OUT_LICENSE}
 if [[ ${NEED_LICENSE} == "mit" ]]; then
     sed -ri -e "s/\[year\]/${YEAR}/;s/\[fullname\]/${NAME}/" ${OUT_LICENSE}
 fi
+
+# vim:ft=sh:ts=4:sw=4
