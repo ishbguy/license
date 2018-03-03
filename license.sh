@@ -23,7 +23,7 @@ function check_arg()
     local FUNC_NAME=$3
 
     [[ $# -ne 3 ]] && die "${FUNCNAME}() args error."
-    [[ ${EXPECT} -ne ${ACTUAL} ]] && die "${FUNC} args error."
+    [[ ${EXPECT} -ne ${ACTUAL} ]] && die "${FUNC_NAME} args error."
 }
 
 function download_licenses()
@@ -33,21 +33,21 @@ function download_licenses()
     local API=$1
     local DIR=$2
 
-    for URL in `curl ${API} 2>/dev/null | jq .[].url`; do
-        URL=`echo ${URL} | sed -r -e 's/^"//;s/"$//'`
-        LICENSE=`basename $URL`
-        echo -ne `curl ${URL} 2>/dev/null | jq .body | sed -r -e 's/^"//;s/"$//;s/\\\"/"/g'` >${DIR}/${LICENSE}
+    for URL in $(curl ${API} 2>/dev/null | jq .[].url); do
+        URL=$(echo ${URL} | sed -r -e 's/^"//;s/"$//')
+        LICENSE=$(basename $URL)
+        echo -ne $(curl ${URL} 2>/dev/null | jq .body | sed -r -e 's/^"//;s/"$//;s/\\\"/"/g') >${DIR}/${LICENSE}
     done
 }
 
 API_URL="https://api.github.com/licenses"
 PREQUEST_BIN=(curl jq sed)
-LICENSE_DIR=$HOME/.license
-NAME=$USER
-YEAR=`date +%Y`
+LICENSE_DIR=${HOME}/.license
+NAME=${USER}
+YEAR=$(date +%Y)
 NEED_LICENSE=
 OUT_LICENSE=LICENSE
-PROGRAM=`basename $0`
+PROGRAM=$(basename $0)
 VERSION="v0.0.1"
 HELP="
 ${PROGRAM} [-o|n|y|d|h] [string] license_name\n
@@ -65,14 +65,14 @@ check_bin ${PREQUEST_BIN[@]}
 
 OPTIND=1
 while getopts "o:n:y:d:vh" OPTION; do
-    case $OPTION in
+    case ${OPTION} in
         o) OUT_LICENSE=${OPTARG};;
         n) NAME=${OPTARG};;
         y) YEAR=${OPTARG};;
         d) LICENSE_DIR=${OPTARG};;
         v) echo ${PROGRAM} ${VERSION} && exit 0 ;;
-        h) echo -ne $HELP && exit 0 ;;
-        ?) echo -ne $HELP && exit 2 ;;
+        h) echo -ne ${HELP} && exit 0 ;;
+        ?) echo -ne ${HELP} && exit 2 ;;
     esac
 done
 shift $((OPTIND - 1))
