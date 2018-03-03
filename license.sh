@@ -22,13 +22,14 @@ function check_arg()
     local EXPECT=$1
     local ACTUAL=$2
 
-    [[ $# -ne 2 ]] && die "${FUNCNAME[0]}() args error."
-    [[ ${EXPECT} -ne ${ACTUAL} ]] && die "${FUNCNAME[1]}() args error."
+    [[ $# != 2 ]] && die "${FUNCNAME[0]}() args error."
+    [[ ${EXPECT} != ${ACTUAL} ]] && die "${FUNCNAME[1]}() args error."
 }
 
 function download_licenses()
 {
     check_arg 2 $#
+    exit 0
 
     local API=$1
     local DIR=$2
