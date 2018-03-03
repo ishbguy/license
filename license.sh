@@ -54,7 +54,8 @@ ${PROGRAM} [-o|n|y|d|h] [string] license_name\n
     -n  Use the string as the author name.\n
     -y  Use the string as the year of the license.\n
     -d  Use the string as the default license directory.\n
-    -v  Print the version number.
+    -l  List all available licenses.\n
+    -v  Print the version number.\n
     -h  Print this help message.\n\n
 
 ${PROGRAM} ${VERSION} is released under the terms of the MIT License.\n
@@ -63,12 +64,13 @@ ${PROGRAM} ${VERSION} is released under the terms of the MIT License.\n
 check_bin ${PREQUEST_BIN[@]}
 
 OPTIND=1
-while getopts "o:n:y:d:vh" OPTION; do
+while getopts "o:n:y:d:lvh" OPTION; do
     case ${OPTION} in
         o) OUT_LICENSE=${OPTARG};;
         n) NAME=${OPTARG};;
         y) YEAR=${OPTARG};;
         d) LICENSE_DIR=${OPTARG};;
+        l) ls -1 ${LICENSE_DIR}; exit 0 ;;
         v) echo ${PROGRAM} ${VERSION} && exit 0 ;;
         h) echo -ne ${HELP} && exit 0 ;;
         ?) echo -ne ${HELP} && exit 2 ;;
