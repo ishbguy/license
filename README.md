@@ -28,6 +28,7 @@ or only download the `license.sh`:
 ```
 $ curl -fLo license.sh \
          https://raw.githubusercontent.com/ishbguy/license/master/license.sh
+$ chmod a+x license.sh
 ```
 
 ## Usage
