@@ -6,7 +6,8 @@
 
 function die()
 {
-    echo "$@" && exit 1
+    echo "$@"
+    exit 1
 }
 
 function check_bin()
@@ -66,14 +67,14 @@ check_bin ${PREQUEST_BIN[@]}
 OPTIND=1
 while getopts "o:n:y:d:lvh" OPTION; do
     case ${OPTION} in
-        o) OUT_LICENSE=${OPTARG};;
-        n) NAME=${OPTARG};;
-        y) YEAR=${OPTARG};;
-        d) LICENSE_DIR=${OPTARG};;
-        l) ls -1 ${LICENSE_DIR}; exit 0 ;;
-        v) echo ${PROGRAM} ${VERSION} && exit 0 ;;
-        h) echo -ne ${HELP} && exit 0 ;;
-        ?) echo -ne ${HELP} && exit 2 ;;
+        o) OUT_LICENSE=${OPTARG} ;;
+        n) NAME=${OPTARG} ;;
+        y) YEAR=${OPTARG} ;;
+        d) LICENSE_DIR=${OPTARG} ;;
+        l) ls -1 ${LICENSE_DIR} ; exit 0 ;;
+        v) echo ${PROGRAM} ${VERSION} ; exit 0 ;;
+        h) echo -ne ${HELP} ; exit 0 ;;
+        ?) echo -ne ${HELP} ; exit 2 ;;
     esac
 done
 shift $((OPTIND - 1))
