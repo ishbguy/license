@@ -33,10 +33,9 @@ function download_licenses()
     local API=$1
     local DIR=$2
 
-    for URL in $(curl ${API} 2>/dev/null | jq .[].url); do
-        URL=$(echo ${URL} | sed -r -e 's/^"//;s/"$//')
+    for URL in $(curl ${API} 2>/dev/null | jq -r '.[].url'); do
         LICENSE=$(basename $URL)
-        echo -ne $(curl ${URL} 2>/dev/null | jq .body | sed -r -e 's/^"//;s/"$//;s/\\\"/"/g') >${DIR}/${LICENSE}
+        curl ${URL} 2>/dev/null | jq -r '.body' >${DIR}/${LICENSE}
     done
 }
 
