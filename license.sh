@@ -86,6 +86,7 @@ NEED_LICENSE=$1
 
 [[ -d ${LICENSE_DIR} ]] || mkdir -p ${LICENSE_DIR} || die "Can not create LICENSE_DIR."
 
+# ensure that there is a needed license or die
 [[ -e ${LICENSE_DIR}/${NEED_LICENSE} ]] || download_licenses ${API_URL} ${LICENSE_DIR}
 [[ -e ${LICENSE_DIR}/${NEED_LICENSE} ]] || die "Can not download ${NEED_LICENSE}."
 
