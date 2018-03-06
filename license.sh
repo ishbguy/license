@@ -13,7 +13,7 @@ function die()
 function check_bin()
 {
     for NEED in "$@"; do
-        which ${NEED} 2>&1 >/dev/null || die "You need to install ${NEED}"
+        which ${NEED} >/dev/null 2>&1 || die "You need to install ${NEED}"
     done
 }
 
