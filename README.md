@@ -10,10 +10,10 @@ An opensource software license generator written in shell script and powered by 
 
 ## Prerequisite
 
-+ `bash`
-+ `curl`
-+ `jq`
-+ `sed`
++ [`bash`](https://www.gnu.org/software/bash/bash.html)
++ [`curl`](https://curl.haxx.se/)
++ [`jq`](https://stedolan.github.io/jq/)
++ [`sed`](https://www.gnu.org/software/sed/)
 
 ## Installation
 
