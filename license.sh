@@ -91,7 +91,10 @@ NEED_LICENSE=$1
 
 cp ${LICENSE_DIR}/${NEED_LICENSE} ${OUT_LICENSE}
 
-if [[ ${NEED_LICENSE} == "mit" ]]; then
+# substitute with year and user name.
+if [[ ${NEED_LICENSE} == "mit" ||\
+    ${NEED_LICENSE} == "bsd-2-clause" ||\
+    ${NEED_LICENSE} == "bsd-3-clause" ]]; then
     sed -ri -e "s/\[year\]/${YEAR}/;s/\[fullname\]/${NAME}/" ${OUT_LICENSE}
 fi
 
