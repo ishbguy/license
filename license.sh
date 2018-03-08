@@ -29,7 +29,6 @@ function check_arg()
 function download_licenses()
 {
     check_arg 2 $#
-    exit 0
 
     local API=$1
     local DIR=$2
