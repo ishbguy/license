@@ -47,6 +47,7 @@ function cecho()
         ma|magenta) COLOR="[35m" ;;
         cy|cyan)    COLOR="[36m" ;;
         wh|white)   COLOR="[37m" ;;
+        *)          COLOR="[34m" ;;
     esac
     echo -ne "${COLOR}${MESSAGE}[0m"
 }
