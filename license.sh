@@ -41,6 +41,18 @@ function download_licenses()
     wait 2>/dev/null
 }
 
+function list_licenses()
+{
+    check_arg 1 $#
+
+    local LICENSE_DIR="$1"
+    
+    for LIC in $(ls -1 "${LICENSE_DIR}"); do
+        # get license's title
+        echo "${LIC}: $(head -1 "${LICENSE_DIR}/${LIC}")"
+    done
+}
+
 API_URL="https://api.github.com/licenses"
 PREQUEST_BIN=(curl jq sed)
 LICENSE_DIR=${HOME}/.license
@@ -73,7 +85,7 @@ while getopts "o:n:y:d:lvh" OPTION; do
         n) NAME=${OPTARG} ;;
         y) YEAR=${OPTARG} ;;
         d) LICENSE_DIR=${OPTARG} ;;
-        l) ls -1 "${LICENSE_DIR}" ; exit 0 ;;
+        l) list_licenses "${LICENSE_DIR}" ; exit 0 ;;
         v) echo "${PROGRAM}" ${VERSION} ; exit 0 ;;
         h) echo -ne "${HELP}" ; exit 0 ;;
         ?) echo -ne "${HELP}" ; exit 2 ;;
