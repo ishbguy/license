@@ -21,14 +21,17 @@ function check_arg()
 {
     local EXPECT="$1"
     local ACTUAL="$2"
+    local MESSAGE="$3"
 
-    [[ $# != 2 ]] && die "${FUNCNAME[0]}() args error."
-    [[ "${EXPECT}" != "${ACTUAL}" ]] && die "${FUNCNAME[1]}() args error."
+    [[ $# -lt 2 ]] && die "${FUNCNAME[0]}() args error."
+    
+    [[ -n $MESSAGE ]] && MESSAGE=": ${MESSAGE}"
+    [[ "${EXPECT}" != "${ACTUAL}" ]] && die "${FUNCNAME[1]}() args error${MESSAGE}."
 }
 
 function download_licenses()
 {
-    check_arg 2 $#
+    check_arg 2 $# "Need a github licenses API URL and license directory"
 
     local API="$1"
     local DIR="$2"
@@ -43,7 +46,7 @@ function download_licenses()
 
 function list_licenses()
 {
-    check_arg 1 $#
+    check_arg 1 $# "Need a license directory"
 
     local LICENSE_DIR="$1"
     
