@@ -72,7 +72,7 @@ function list_licenses()
 
     local LICENSE_DIR="$1"
     
-    for LIC in $(ls -1 "${LICENSE_DIR}"); do
+    for LIC in $(basename -a "${LICENSE_DIR}"/*); do
         # get license's title
         echo "$(cecho blue "${LIC}"): $(head -1 "${LICENSE_DIR}/${LIC}")"
     done
