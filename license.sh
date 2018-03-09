@@ -29,6 +29,28 @@ function check_arg()
     [[ "${EXPECT}" != "${ACTUAL}" ]] && die "${FUNCNAME[1]}() args error${MESSAGE}."
 }
 
+# echo a message with color
+function cecho()
+{
+    check_arg 2 $# "Need a COLOR name and a MESSAGE"
+
+    local COLOR_NAME="$1"
+    local MESSAGE="$2"
+    local COLOR=
+
+    case "${COLOR_NAME}" in
+        bla|black)  COLOR="[30m" ;;
+        re|red)     COLOR="[31m" ;;
+        gr|green)   COLOR="[32m" ;;
+        ye|yellow)  COLOR="[33m" ;;
+        blu|blue)   COLOR="[34m" ;;
+        ma|magenta) COLOR="[35m" ;;
+        cy|cyan)    COLOR="[36m" ;;
+        wh|white)   COLOR="[37m" ;;
+    esac
+    echo -ne "${COLOR}${MESSAGE}[0m"
+}
+
 function download_licenses()
 {
     check_arg 2 $# "Need a github licenses API URL and license directory"
@@ -52,7 +74,7 @@ function list_licenses()
     
     for LIC in $(ls -1 "${LICENSE_DIR}"); do
         # get license's title
-        echo "${LIC}: $(head -1 "${LICENSE_DIR}/${LIC}")"
+        echo "$(cecho blue "${LIC}"): $(head -1 "${LICENSE_DIR}/${LIC}")"
     done
 }
 
