@@ -13,7 +13,8 @@ function die()
 function check_tool()
 {
     for TOOL in "$@"; do
-        which "${TOOL}" >/dev/null 2>&1 || die "You need to install ${TOOL}"
+        which "${TOOL}" >/dev/null 2>&1 \
+            || die "You need to install ${TOOL}"
     done
 }
 
@@ -26,7 +27,8 @@ function ensure()
     [[ $# -lt 2 ]] && die "${FUNCNAME[0]}() args error."
     
     [[ -n $MESSAGE ]] && MESSAGE=": ${MESSAGE}"
-    [[ "${EXPECT}" != "${ACTUAL}" ]] && die "${FUNCNAME[1]}() args error${MESSAGE}."
+    [[ "${EXPECT}" != "${ACTUAL}" ]] \
+        && die "${FUNCNAME[1]}() args error${MESSAGE}."
 }
 
 # echo a message with color
@@ -153,11 +155,14 @@ shift $((OPTIND - 1))
 [[ $# -ne 1 ]] && die "Please give a license."
 TARGET_LICENSE="$1"
 
-[[ -d ${LICENSE_DIR} ]] || mkdir -p "${LICENSE_DIR}" || die "Can not create LICENSE_DIR."
+[[ -d ${LICENSE_DIR} ]] || mkdir -p "${LICENSE_DIR}" \
+    || die "Can not create LICENSE_DIR."
 
 # ensure that there is a needed license or die
-[[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] || download_licenses "${GITHUB_LICENSES_API}" "${LICENSE_DIR}"
-[[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] || die "Can not download ${TARGET_LICENSE}."
+[[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] \
+    || download_licenses "${GITHUB_LICENSES_API}" "${LICENSE_DIR}"
+[[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] \
+    || die "Can not download ${TARGET_LICENSE}."
 
 cp "${LICENSE_DIR}/${TARGET_LICENSE}" "${LICENSE_NAME}"
 
@@ -165,7 +170,8 @@ cp "${LICENSE_DIR}/${TARGET_LICENSE}" "${LICENSE_NAME}"
 if [[ ${TARGET_LICENSE} == "mit" ||\
     ${TARGET_LICENSE} == "bsd-2-clause" ||\
     ${TARGET_LICENSE} == "bsd-3-clause" ]]; then
-    sed -ri -e "s/\\[year\\]/${YEAR}/;s/\\[fullname\\]/${AUTHOR}/" "${LICENSE_NAME}"
+    sed -ri -e "s/\\[year\\]/${YEAR}/;s/\\[fullname\\]/${AUTHOR}/" \
+        "${LICENSE_NAME}"
 fi
 
 # vim:ft=sh:ts=4:sw=4
