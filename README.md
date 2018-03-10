@@ -38,6 +38,8 @@ You can set you own config in `$HOME/.licenserc`:
 
 ```
 # uncomment to set your own config
+# all this three config can write in UPPER-CASE,
+# so set AUTHOR, LICENSE_DIR, LICENSE_NAME is OK
 author=ishbguy
 #license_dir=
 #license_name=
