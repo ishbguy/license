@@ -10,14 +10,14 @@ function die()
     exit 1
 }
 
-function check_bin()
+function check_tool()
 {
-    for NEED in "$@"; do
-        which "${NEED}" >/dev/null 2>&1 || die "You need to install ${NEED}"
+    for TOOL in "$@"; do
+        which "${TOOL}" >/dev/null 2>&1 || die "You need to install ${TOOL}"
     done
 }
 
-function check_arg()
+function ensure()
 {
     local EXPECT="$1"
     local ACTUAL="$2"
@@ -32,7 +32,7 @@ function check_arg()
 # echo a message with color
 function cecho()
 {
-    check_arg 2 $# "Need a COLOR name and a MESSAGE"
+    ensure 2 $# "Need a COLOR name and a MESSAGE"
 
     local COLOR_NAME="$1"
     local MESSAGE="$2"
@@ -54,7 +54,7 @@ function cecho()
 
 function download_licenses()
 {
-    check_arg 2 $# "Need a github licenses API URL and license directory"
+    ensure 2 $# "Need a github licenses API URL and license directory"
 
     local API="$1"
     local DIR="$2"
@@ -69,23 +69,23 @@ function download_licenses()
 
 function list_licenses()
 {
-    check_arg 1 $# "Need a license directory"
+    ensure 1 $# "Need a license directory"
 
     local LICENSE_DIR="$1"
     
-    for LIC in $(basename -a "${LICENSE_DIR}"/*); do
+    for LICENSE in $(basename -a "${LICENSE_DIR}"/*); do
         # get license's title
-        echo "$(cecho blue "${LIC}"): $(head -1 "${LICENSE_DIR}/${LIC}")"
+        echo "$(cecho blue "${LICENSE}"): $(head -1 "${LICENSE_DIR}/${LICENSE}")"
     done
 }
 
-API_URL="https://api.github.com/licenses"
-PREQUEST_BIN=(curl jq sed)
+GITHUB_LICENSES_API="https://api.github.com/licenses"
+PREREQUSITE_TOOLS=(curl jq sed)
 LICENSE_DIR=${HOME}/.license
-NAME=${USER}
+AUTHOR=${USER}
 YEAR=$(date +%Y)
-NEED_LICENSE=
-OUT_LICENSE=LICENSE
+TARGET_LICENSE=
+LICENSE_NAME=LICENSE
 PROGRAM=$(basename "$0")
 VERSION="v0.0.1"
 HELP="\
@@ -102,13 +102,13 @@ ${PROGRAM} [-o|n|y|d|l|v|h] [string] license_name
 ${PROGRAM} ${VERSION} is released under the terms of the MIT License.
 "
 
-check_bin "${PREQUEST_BIN[@]}"
+check_tool "${PREREQUSITE_TOOLS[@]}"
 
 OPTIND=1
 while getopts "o:n:y:d:lvh" OPTION; do
     case ${OPTION} in
-        o) OUT_LICENSE=${OPTARG} ;;
-        n) NAME=${OPTARG} ;;
+        o) LICENSE_NAME=${OPTARG} ;;
+        n) AUTHOR=${OPTARG} ;;
         y) YEAR=${OPTARG} ;;
         d) LICENSE_DIR=${OPTARG} ;;
         l) list_licenses "${LICENSE_DIR}" ; exit 0 ;;
@@ -120,21 +120,21 @@ done
 shift $((OPTIND - 1))
 
 [[ $# -ne 1 ]] && die "Please give a license."
-NEED_LICENSE=$1
+TARGET_LICENSE=$1
 
 [[ -d ${LICENSE_DIR} ]] || mkdir -p "${LICENSE_DIR}" || die "Can not create LICENSE_DIR."
 
 # ensure that there is a needed license or die
-[[ -e ${LICENSE_DIR}/${NEED_LICENSE} ]] || download_licenses "${API_URL}" "${LICENSE_DIR}"
-[[ -e ${LICENSE_DIR}/${NEED_LICENSE} ]] || die "Can not download ${NEED_LICENSE}."
+[[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] || download_licenses "${GITHUB_LICENSES_API}" "${LICENSE_DIR}"
+[[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] || die "Can not download ${TARGET_LICENSE}."
 
-cp "${LICENSE_DIR}/${NEED_LICENSE}" "${OUT_LICENSE}"
+cp "${LICENSE_DIR}/${TARGET_LICENSE}" "${LICENSE_NAME}"
 
 # substitute with year and user name.
-if [[ ${NEED_LICENSE} == "mit" ||\
-    ${NEED_LICENSE} == "bsd-2-clause" ||\
-    ${NEED_LICENSE} == "bsd-3-clause" ]]; then
-    sed -ri -e "s/\\[year\\]/${YEAR}/;s/\\[fullname\\]/${NAME}/" "${OUT_LICENSE}"
+if [[ ${TARGET_LICENSE} == "mit" ||\
+    ${TARGET_LICENSE} == "bsd-2-clause" ||\
+    ${TARGET_LICENSE} == "bsd-3-clause" ]]; then
+    sed -ri -e "s/\\[year\\]/${YEAR}/;s/\\[fullname\\]/${AUTHOR}/" "${LICENSE_NAME}"
 fi
 
 # vim:ft=sh:ts=4:sw=4
