@@ -20,21 +20,19 @@ function check_tool()
 
 function ensure()
 {
-    local EXPECT="$1"
-    local ACTUAL="$2"
-    local MESSAGE="$3"
+    local EXPR="$1"
+    local MESSAGE="$2"
 
-    [[ $# -lt 2 ]] && die "${FUNCNAME[0]}() args error."
+    [[ $# -lt 1 ]] && die "${FUNCNAME[0]}() args error."
     
     [[ -n $MESSAGE ]] && MESSAGE=": ${MESSAGE}"
-    [[ "${EXPECT}" != "${ACTUAL}" ]] \
-        && die "${FUNCNAME[1]}() args error${MESSAGE}."
+    [ ${EXPR} ] || die "${FUNCNAME[1]}() args error${MESSAGE}."
 }
 
 # echo a message with color
 function cecho()
 {
-    ensure 2 $# "Need a COLOR name and a MESSAGE"
+    ensure "2 == $#" "Need a COLOR name and a MESSAGE"
 
     local COLOR_NAME="$1"
     local MESSAGE="$2"
@@ -56,7 +54,7 @@ function cecho()
 
 function read_config()
 {
-    ensure 2 $# "Need LICENSE_CONFIGS array and CONFIG_FILE"
+    ensure "2 == $#" "Need LICENSE_CONFIGS array and CONFIG_FILE"
 
     # make a ref of config array
     local -n CONFIGS="$1"
@@ -84,7 +82,7 @@ function read_config()
 
 function download_licenses()
 {
-    ensure 2 $# "Need a github licenses API URL and license directory"
+    ensure "2 == $#" "Need a github licenses API URL and license directory"
 
     local API="$1"
     local DIR="$2"
@@ -99,7 +97,7 @@ function download_licenses()
 
 function list_licenses()
 {
-    ensure 1 $# "Need a license directory"
+    ensure "1 == $#" "Need a license directory"
 
     local LICENSE_DIR="$1"
     
