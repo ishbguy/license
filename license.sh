@@ -52,6 +52,33 @@ function cecho()
     echo -ne "${COLOR}${MESSAGE}[0m"
 }
 
+function read_config()
+{
+    ensure 2 $# "Need LICENSE_CONFIGS array and CONFIG_FILE"
+
+    local -n CONFIGS="$1"
+    local CONFIG_FILE="$2"
+    local OLD_IFS="${IFS}"
+    local TMP_FILE
+
+    [[ -e ${CONFIG_FILE} ]] || return 1
+
+    # remove blank lines, comments, heading and tailing spaces
+    TMP_FILE=$(mktemp)
+    sed -re '/^\s*$/d;/^#.*/d;s/#.*//g;s/^\s+//;s/\s+$//' \
+        "${CONFIG_FILE}" >"${TMP_FILE}"
+
+    # read name-value pairs from config file
+    while IFS="=" read -r NAME VALUE; do
+        NAME="${NAME#\"}"; NAME="${NAME%\"}"
+        VALUE="${VALUE#\"}"; VALUE="${VALUE%\"}"
+        CONFIGS["${NAME,,}"]="${VALUE}"
+    done <"${TMP_FILE}"
+
+    rm -rf "${TMP_FILE}"
+    IFS="${OLD_IFS}"
+}
+
 function download_licenses()
 {
     ensure 2 $# "Need a github licenses API URL and license directory"
@@ -79,13 +106,17 @@ function list_licenses()
     done
 }
 
+LICENSE_CONFIG_FILE="${HOME}/.licenserc"
+declare -A LICENSE_CONFIGS
+[[ -e ${LICENSE_CONFIG_FILE} ]] \
+    && read_config LICENSE_CONFIGS "${LICENSE_CONFIG_FILE}"
 GITHUB_LICENSES_API="https://api.github.com/licenses"
 PREREQUSITE_TOOLS=(curl jq sed)
-LICENSE_DIR="${HOME}/.license"
-AUTHOR="${USER}"
+LICENSE_DIR="${LICENSE_CONFIGS[license_dir]:-${HOME}/.license}"
+AUTHOR="${LICENSE_CONFIGS[author]:-${USER}}"
 YEAR=$(date +%Y)
 TARGET_LICENSE=
-LICENSE_NAME=LICENSE
+LICENSE_NAME="${LICENSE_CONFIGS[license_name]:-LICENSE}"
 PROGRAM=$(basename "$0")
 VERSION="v0.0.1"
 HELP="\
