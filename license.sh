@@ -81,8 +81,8 @@ function list_licenses()
 
 GITHUB_LICENSES_API="https://api.github.com/licenses"
 PREREQUSITE_TOOLS=(curl jq sed)
-LICENSE_DIR=${HOME}/.license
-AUTHOR=${USER}
+LICENSE_DIR="${HOME}/.license"
+AUTHOR="${USER}"
 YEAR=$(date +%Y)
 TARGET_LICENSE=
 LICENSE_NAME=LICENSE
@@ -120,7 +120,7 @@ done
 shift $((OPTIND - 1))
 
 [[ $# -ne 1 ]] && die "Please give a license."
-TARGET_LICENSE=$1
+TARGET_LICENSE="$1"
 
 [[ -d ${LICENSE_DIR} ]] || mkdir -p "${LICENSE_DIR}" || die "Can not create LICENSE_DIR."
 
