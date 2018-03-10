@@ -1,4 +1,4 @@
-# license
+# [license](https://github.com/ishbguy/license)
 
 An opensource software license generator written in shell script and powered by [GitHub's licenses API](https://developer.github.com/v3/licenses/).
 
@@ -7,6 +7,7 @@ An opensource software license generator written in shell script and powered by 
 + Support all licenses available on GitHub.
 + Less dependences.
 + Generate without network (except on first run).
++ Configurable
 
 ## Prerequisite
 
@@ -29,6 +30,17 @@ or only download the `license.sh`:
 $ curl -fLo license.sh \
          https://raw.githubusercontent.com/ishbguy/license/master/license.sh
 $ chmod a+x license.sh
+```
+
+## Configuration
+
+You can set you own config in `$HOME/.licenserc`:
+
+```
+# uncomment to set your own config
+author=ishbguy
+#license_dir=
+#license_name=
 ```
 
 ## Usage
