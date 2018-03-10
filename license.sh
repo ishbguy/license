@@ -58,6 +58,7 @@ function read_config()
 {
     ensure 2 $# "Need LICENSE_CONFIGS array and CONFIG_FILE"
 
+    # make a ref of config array
     local -n CONFIGS="$1"
     local CONFIG_FILE="$2"
     local OLD_IFS="${IFS}"
