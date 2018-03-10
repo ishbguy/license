@@ -41,15 +41,15 @@ function cecho()
     local COLOR=
 
     case "${COLOR_NAME}" in
-        bla|black)  COLOR="[30m" ;;
-        re|red)     COLOR="[31m" ;;
-        gr|green)   COLOR="[32m" ;;
-        ye|yellow)  COLOR="[33m" ;;
-        blu|blue)   COLOR="[34m" ;;
-        ma|magenta) COLOR="[35m" ;;
-        cy|cyan)    COLOR="[36m" ;;
-        wh|white)   COLOR="[37m" ;;
-        *)          COLOR="[34m" ;;
+        bla|black)  COLOR="\\x1B[30m" ;;
+        re|red)     COLOR="\\x1B[31m" ;;
+        gr|green)   COLOR="\\x1B[32m" ;;
+        ye|yellow)  COLOR="\\x1B[33m" ;;
+        blu|blue)   COLOR="\\x1B[34m" ;;
+        ma|magenta) COLOR="\\x1B[35m" ;;
+        cy|cyan)    COLOR="\\x1B[36m" ;;
+        wh|white)   COLOR="\\x1B[37m" ;;
+        *)          COLOR="\\x1B[34m" ;;
     esac
     echo -ne "${COLOR}${MESSAGE}[0m"
 }
