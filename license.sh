@@ -86,13 +86,26 @@ function download_licenses()
 
     local API="$1"
     local DIR="$2"
+    local TMP_FILE="/tmp/license-${FUNCNAME[0]}-${RANDOM}-${RANDOM}-${RANDOM}"
+
+    mkfifo "${TMP_FILE}"
+    exec 8<>"${TMP_FILE}"
+    for ((i = 0; i < 8; i++)); do
+        echo -ne "\\n" 1>&8
+    done
 
     for URL in $(curl "${API}" 2>/dev/null | jq -r '.[].url'); do
-        LICENSE=$(basename "${URL}")
-        # get licenses in backgroup and wait jobs finish
-        curl "${URL}" 2>/dev/null | jq -r '.body' >"${DIR}/${LICENSE}" &
+        read -r -u 8 
+        {
+            LICENSE=$(basename "${URL}")
+            # get licenses in backgroup and wait jobs finish
+            curl "${URL}" 2>/dev/null | jq -r '.body' >"${DIR}/${LICENSE}"
+            echo -ne "\\n" 1>&8
+        } &
     done 2>/dev/null
+
     wait 2>/dev/null
+    rm "${TMP_FILE}"
 }
 
 function list_licenses()
