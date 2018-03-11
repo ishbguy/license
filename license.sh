@@ -141,6 +141,7 @@ ${PROGRAM} [-o|n|y|d|l|v|h] [string] license_name
     -n  Use the string as the author name.
     -y  Use the string as the year of the license.
     -d  Use the string as the default license directory.
+    -u  Update licenses.
     -l  List all available licenses.
     -v  Print the version number.
     -h  Print this help message.
