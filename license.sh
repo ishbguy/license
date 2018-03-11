@@ -152,12 +152,13 @@ check_tool "${PREREQUSITE_TOOLS[@]}"
 
 declare -A OPTIONS ARGUMENTS
 OPTIND=1
-while getopts "o:n:y:d:lvh" OPTION; do
+while getopts "o:n:y:d:ulvh" OPTION; do
     case ${OPTION} in
         o) OPTIONS[o]=1; ARGUMENTS[o]=${OPTARG};;
         n) OPTIONS[n]=1; ARGUMENTS[n]=${OPTARG};;
         y) OPTIONS[y]=1; ARGUMENTS[y]=${OPTARG};;
         d) OPTIONS[d]=1; ARGUMENTS[d]=${OPTARG};;
+        u) OPTIONS[u]=1; ARGUMENTS[u]=${OPTARG};;
         l) OPTIONS[l]=1; ARGUMENTS[l]=${OPTARG};;
         v) OPTIONS[v]=1; ARGUMENTS[v]=${OPTARG};;
         h) OPTIONS[h]=1; ARGUMENTS[h]=${OPTARG};;
@@ -174,6 +175,9 @@ shift $((OPTIND - 1))
 
 [[ ${OPTIONS[v]} -eq 1 || ${OPTIONS[h]} -eq 1 ]] && echo -ne "${HELP}" && exit 0
 [[ ${OPTIONS[l]} -eq 1 ]] && list_licenses "${LICENSE_DIR}" && exit 0
+
+[[ ${OPTIONS[u]} -eq 1 ]] \
+    && download_licenses "${GITHUB_LICENSES_API}" "${LICENSE_DIR}" && exit 0
 
 [[ $# -ne 1 ]] && die "Please give a license."
 TARGET_LICENSE="$1"
