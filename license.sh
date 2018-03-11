@@ -153,7 +153,8 @@ function list_licenses()
 
     for LICENSE in $(basename -a "${LICENSE_DIR}"/*); do
         # get license's title
-        echo "$(cecho blue "${LICENSE}"): $(head -1 "${LICENSE_DIR}/${LICENSE}")"
+        echo "$(cecho blue "${LICENSE}"): $(head -1 "${LICENSE_DIR}/${LICENSE}" \
+            | sed -re 's/^\s+//;s/\s+$//')"
     done
 }
 
