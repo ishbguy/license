@@ -150,20 +150,30 @@ ${PROGRAM} ${VERSION} is released under the terms of the MIT License.
 
 check_tool "${PREREQUSITE_TOOLS[@]}"
 
+declare -A OPTIONS ARGUMENTS
 OPTIND=1
 while getopts "o:n:y:d:lvh" OPTION; do
     case ${OPTION} in
-        o) LICENSE_NAME=${OPTARG} ;;
-        n) AUTHOR=${OPTARG} ;;
-        y) YEAR=${OPTARG} ;;
-        d) LICENSE_DIR=${OPTARG} ;;
-        l) list_licenses "${LICENSE_DIR}" ; exit 0 ;;
-        v) echo "${PROGRAM}" ${VERSION} ; exit 0 ;;
-        h) echo -ne "${HELP}" ; exit 0 ;;
-        ?) echo -ne "${HELP}" ; exit 2 ;;
+        o) OPTIONS[o]=1; ARGUMENTS[o]=${OPTARG};;
+        n) OPTIONS[n]=1; ARGUMENTS[n]=${OPTARG};;
+        y) OPTIONS[y]=1; ARGUMENTS[y]=${OPTARG};;
+        d) OPTIONS[d]=1; ARGUMENTS[d]=${OPTARG};;
+        l) OPTIONS[l]=1; ARGUMENTS[l]=${OPTARG};;
+        v) OPTIONS[v]=1; ARGUMENTS[v]=${OPTARG};;
+        h) OPTIONS[h]=1; ARGUMENTS[h]=${OPTARG};;
+        :) echo -ne "${HELP}"; exit 1;;
+        ?) echo -ne "${HELP}"; exit 1;;
     esac
 done
 shift $((OPTIND - 1))
+
+[[ ${OPTIONS[o]} -eq 1 ]] && LICENSE_NAME=${ARGUMENTS[o]}
+[[ ${OPTIONS[n]} -eq 1 ]] && AUTHOR=${ARGUMENTS[n]}
+[[ ${OPTIONS[y]} -eq 1 ]] && YEAR=${ARGUMENTS[y]}
+[[ ${OPTIONS[d]} -eq 1 ]] && LICENSE_DIR=${ARGUMENTS[d]}
+
+[[ ${OPTIONS[v]} -eq 1 || ${OPTIONS[h]} -eq 1 ]] && echo -ne "${HELP}" && exit 0
+[[ ${OPTIONS[l]} -eq 1 ]] && list_licenses "${LICENSE_DIR}" && exit 0
 
 [[ $# -ne 1 ]] && die "Please give a license."
 TARGET_LICENSE="$1"
