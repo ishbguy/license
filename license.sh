@@ -29,10 +29,21 @@ function ensure()
     [ ${EXPR} ] || die "${FUNCNAME[1]}() args error${MESSAGE}."
 }
 
+function ensure_not_empty()
+{
+    ensure "$# -ge 1" "Need one or more args"
+
+    for arg in "$@"; do
+        [[ -n ${arg} ]] || die \
+            "${FUNCNAME[1]}() args error: Arguments should not be empty."
+    done
+}
+
 # echo a message with color
 function cecho()
 {
     ensure "2 == $#" "Need a COLOR name and a MESSAGE"
+    ensure_not_empty "$@"
 
     local COLOR_NAME="$1"
     local MESSAGE="$2"
@@ -55,6 +66,7 @@ function cecho()
 function read_config()
 {
     ensure "2 == $#" "Need LICENSE_CONFIGS array and CONFIG_FILE"
+    ensure_not_empty "$@"
 
     # make a ref of config array
     local -n CONFIGS="$1"
@@ -83,6 +95,7 @@ function read_config()
 function getoptions()
 {
     ensure "$# -ge 3" "Need OPTIONS and ARGUMENTS"
+    ensure_not_empty "$1" "$2" "$3"
 
     local -n __options="$1"
     local -n __arguments="$2"
@@ -101,6 +114,7 @@ function getoptions()
 function download_licenses()
 {
     ensure "2 == $#" "Need a github licenses API URL and license directory"
+    ensure_not_empty "$@"
 
     local API="$1"
     local DIR="$2"
@@ -131,6 +145,7 @@ function download_licenses()
 function list_licenses()
 {
     ensure "1 == $#" "Need a license directory"
+    ensure_not_empty "$@"
 
     local LICENSE_DIR="$1"
     
