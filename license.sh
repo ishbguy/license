@@ -80,6 +80,24 @@ function read_config()
     IFS="${OLD_IFS}"
 }
 
+function getoptions()
+{
+    ensure "$# -ge 3" "Need OPTIONS and ARGUMENTS"
+
+    local -n __options="$1"
+    local -n __arguments="$2"
+    local argstring="$3"
+    shift 3
+
+    OPTIND=1
+    while getopts "${argstring}" OPT; do
+        [[ ${OPT} == ":" || ${OPT} == "?" ]] && die "${HELP}"
+        __options[${OPT}]=1
+        __arguments[${OPT}]="${OPTARG}"
+    done
+    shift $((OPTIND - 1))
+}
+
 function download_licenses()
 {
     ensure "2 == $#" "Need a github licenses API URL and license directory"
@@ -157,20 +175,7 @@ check_tool "${PREREQUSITE_TOOLS[@]}"
 
 declare -A OPTIONS ARGUMENTS
 OPTIND=1
-while getopts "o:n:y:d:ulvh" OPTION; do
-    case ${OPTION} in
-        o) OPTIONS[o]=1; ARGUMENTS[o]=${OPTARG};;
-        n) OPTIONS[n]=1; ARGUMENTS[n]=${OPTARG};;
-        y) OPTIONS[y]=1; ARGUMENTS[y]=${OPTARG};;
-        d) OPTIONS[d]=1; ARGUMENTS[d]=${OPTARG};;
-        u) OPTIONS[u]=1; ARGUMENTS[u]=${OPTARG};;
-        l) OPTIONS[l]=1; ARGUMENTS[l]=${OPTARG};;
-        v) OPTIONS[v]=1; ARGUMENTS[v]=${OPTARG};;
-        h) OPTIONS[h]=1; ARGUMENTS[h]=${OPTARG};;
-        :) echo -ne "${HELP}"; exit 1;;
-        ?) echo -ne "${HELP}"; exit 1;;
-    esac
-done
+getoptions OPTIONS ARGUMENTS "o:n:y:d:ulvh" "$@"
 shift $((OPTIND - 1))
 
 [[ ${OPTIONS[o]} -eq 1 ]] && LICENSE_NAME=${ARGUMENTS[o]}
