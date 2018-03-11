@@ -90,7 +90,7 @@ function download_licenses()
 
     mkfifo "${TMP_FILE}"
     exec 8<>"${TMP_FILE}"
-    for ((i = 0; i < 8; i++)); do
+    for ((i = 0; i < LICENSE_JOBS; i++)); do
         echo -ne "\\n" 1>&8
     done
 
@@ -131,6 +131,7 @@ AUTHOR="${LICENSE_CONFIGS[author]:-${USER}}"
 YEAR=$(date +%Y)
 TARGET_LICENSE=
 LICENSE_NAME="${LICENSE_CONFIGS[license_name]:-LICENSE}"
+LICENSE_JOBS="${LICENSE_CONFIGS[license_jobs]:-8}"
 PROGRAM=$(basename "$0")
 VERSION="v0.0.1"
 HELP="\
