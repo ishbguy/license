@@ -88,6 +88,8 @@ function download_licenses()
     local DIR="$2"
     local TMP_FILE="/tmp/license-${FUNCNAME[0]}-${RANDOM}-${RANDOM}-${RANDOM}"
 
+    [[ -d ${DIR} ]] || mkdir "${DIR}" || die "Can not mkdir ${DIR}";
+
     mkfifo "${TMP_FILE}"
     exec 8<>"${TMP_FILE}"
     for ((i = 0; i < LICENSE_JOBS; i++)); do
@@ -114,6 +116,8 @@ function list_licenses()
 
     local LICENSE_DIR="$1"
     
+    [[ -d ${LICENSE_DIR} ]] || die "Can not list licenses.";
+
     for LICENSE in $(basename -a "${LICENSE_DIR}"/*); do
         # get license's title
         echo "$(cecho blue "${LICENSE}"): $(head -1 "${LICENSE_DIR}/${LICENSE}")"
@@ -183,8 +187,8 @@ shift $((OPTIND - 1))
 [[ $# -ne 1 ]] && die "Please give a license."
 TARGET_LICENSE="$1"
 
-[[ -d ${LICENSE_DIR} ]] || mkdir -p "${LICENSE_DIR}" \
-    || die "Can not create LICENSE_DIR."
+[[ -d ${LICENSE_DIR} ]] \
+    || mkdir -p "${LICENSE_DIR}" || die "Can not create ${LICENSE_DIR}."
 
 # ensure that there is a needed license or die
 [[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] \
