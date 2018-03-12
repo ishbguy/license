@@ -196,7 +196,6 @@ ${PROGRAM} ${VERSION} is released under the terms of the MIT License.
 check_tool "${PREREQUSITE_TOOLS[@]}"
 
 declare -A OPTIONS ARGUMENTS
-OPTIND=1
 getoptions OPTIONS ARGUMENTS "o:n:y:d:ulvh" "$@"
 shift $((OPTIND - 1))
 
