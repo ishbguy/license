@@ -124,6 +124,10 @@ function download_licenses()
 
     mkfifo "${TMP_FILE}"
     exec 8<>"${TMP_FILE}"
+    
+    # use trap to clean up when function return
+    trap "exec 8<&-; exec 8>&-; rm -f ${TMP_FILE}" RETURN
+
     for ((i = 0; i < LICENSE_JOBS; i++)); do
         echo -ne "\\n" 1>&8
     done
@@ -138,10 +142,6 @@ function download_licenses()
         } &
     done 2>/dev/null
     wait 2>/dev/null
-
-    exec 8<&-
-    exec 8>&-
-    rm "${TMP_FILE}"
 }
 
 function list_licenses()
