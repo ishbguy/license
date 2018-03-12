@@ -77,8 +77,11 @@ function read_config()
     # return if file does not exist
     [[ -e ${CONFIG_FILE} ]] || return 1
 
-    # remove blank lines, comments, leading and tailing spaces
     TMP_FILE=$(mktemp)
+    # use trap to rm temp file and recover old IFS
+    trap "rm -f ${TMP_FILE}; IFS=${OLD_IFS}" RETURN
+
+    # remove blank lines, comments, leading and tailing spaces
     sed -re '/^\s*$/d;/^#.*/d;s/#.*//g;s/^\s+//;s/\s+$//' \
         "${CONFIG_FILE}" >"${TMP_FILE}"
 
@@ -90,9 +93,6 @@ function read_config()
         # convert uppercase to lowercase
         CONFIGS["${NAME,,}"]="${VALUE}"
     done <"${TMP_FILE}"
-
-    rm -rf "${TMP_FILE}"
-    IFS="${OLD_IFS}"
 }
 
 function getoptions()
