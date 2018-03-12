@@ -74,17 +74,20 @@ function read_config()
     local OLD_IFS="${IFS}"
     local TMP_FILE
 
+    # return if file does not exist
     [[ -e ${CONFIG_FILE} ]] || return 1
 
-    # remove blank lines, comments, heading and tailing spaces
+    # remove blank lines, comments, leading and tailing spaces
     TMP_FILE=$(mktemp)
     sed -re '/^\s*$/d;/^#.*/d;s/#.*//g;s/^\s+//;s/\s+$//' \
         "${CONFIG_FILE}" >"${TMP_FILE}"
 
     # read name-value pairs from config file
     while IFS="=" read -r NAME VALUE; do
+        # trim leading and tailing double quote
         NAME="${NAME#\"}"; NAME="${NAME%\"}"
         VALUE="${VALUE#\"}"; VALUE="${VALUE%\"}"
+        # convert uppercase to lowercase
         CONFIGS["${NAME,,}"]="${VALUE}"
     done <"${TMP_FILE}"
 
@@ -128,6 +131,7 @@ function download_licenses()
     # use trap to clean up when function return
     trap "exec 8<&-; exec 8>&-; rm -f ${TMP_FILE}" RETURN
 
+    # fullfill fifo file for later read
     for ((i = 0; i < LICENSE_JOBS; i++)); do
         echo 1>&8
     done
@@ -151,7 +155,7 @@ function list_licenses()
 
     local LICENSE_DIR="$1"
     
-    [[ -d ${LICENSE_DIR} ]] || die "Can not list licenses.";
+    [[ -d ${LICENSE_DIR} ]] || die "${LICENSE_DIR} is not a directory.";
 
     for LICENSE in $(basename -a "${LICENSE_DIR}"/*); do
         # get license's title
