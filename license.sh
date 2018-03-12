@@ -129,7 +129,7 @@ function download_licenses()
     trap "exec 8<&-; exec 8>&-; rm -f ${TMP_FILE}" RETURN
 
     for ((i = 0; i < LICENSE_JOBS; i++)); do
-        echo -ne "\\n" 1>&8
+        echo 1>&8
     done
 
     for URL in $(curl "${API}" 2>/dev/null | jq -r '.[].url'); do
@@ -138,7 +138,7 @@ function download_licenses()
             LICENSE=$(basename "${URL}")
             # get licenses in backgroup and wait jobs finish
             curl "${URL}" 2>/dev/null | jq -r '.body' >"${DIR}/${LICENSE}"
-            echo -ne "\\n" 1>&8
+            echo 1>&8
         } &
     done 2>/dev/null
     wait 2>/dev/null
