@@ -53,25 +53,31 @@ Generate a license:
 $ license.sh mit
 ```
 
-or rename a default LICENSE name:
+Rename a default LICENSE name:
 
 ```
 $ license.sh -o LICENSE.txt mit
 ```
 
-or specify the year and the author name:
+Specify the year and the author name:
 
 ```
 $ license.sh -y 2018 -n ishbguy mit
 ```
 
-or specify a license directory:
+Specify a license directory:
 
 ```
 $ license.sh -d lic mit
 ```
 
-list all available licenses:
+Download(if no licenses exist in the specify directory) or update licenses:
+
+```
+$ license.sh -d lic -u
+```
+
+List all available licenses:
 
 ```
 $ license.sh -l
