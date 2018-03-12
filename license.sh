@@ -139,6 +139,7 @@ function download_licenses()
     done 2>/dev/null
     wait 2>/dev/null
 
+    exec 8<&-
     exec 8>&-
     rm "${TMP_FILE}"
 }
