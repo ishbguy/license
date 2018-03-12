@@ -137,8 +137,9 @@ function download_licenses()
             echo -ne "\\n" 1>&8
         } &
     done 2>/dev/null
-
     wait 2>/dev/null
+
+    exec 8>&-
     rm "${TMP_FILE}"
 }
 
