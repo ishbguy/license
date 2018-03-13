@@ -11,7 +11,7 @@ An opensource software license generator written in shell script and powered by 
 + [:notebook: Usage](#notebook-usage)
 + [:hibiscus: Contributing](#hibiscus-contributing)
 + [:boy: Authors](#boy-authors)
-+ [:scroll: License :copyright:](#scroll-license-copyright)
++ [:scroll: License](#scroll-license)
 
 ## :art: Features
 
@@ -115,6 +115,6 @@ $ license.sh -l
 
 + [ishbguy](https://github.com/ishbguy)
 
-## :scroll: License :copyright:
+## :scroll: License
 
 Released under the terms of the [MIT License](https://opensource.org/licenses/MIT).
