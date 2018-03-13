@@ -13,21 +13,21 @@ An opensource software license generator written in shell script and powered by 
 + [Authors](#authors)
 + [License](#license-1)
 
-## Features
+## :art: Features
 
 + Support all licenses available on GitHub.
 + Less dependences.
 + Generate without network (except on first run).
 + Configurable.
 
-## Prerequisite
+## :straight_ruler: Prerequisite
 
 > + [`bash`](https://www.gnu.org/software/bash/bash.html)
 > + [`curl`](https://curl.haxx.se/)
 > + [`jq`](https://stedolan.github.io/jq/)
 > + [`sed`](https://www.gnu.org/software/sed/)
 
-## Installation
+## :rocket: Installation
 
 You can get this program with `git`:
 
@@ -43,7 +43,7 @@ $ curl -fLo license.sh \
 $ chmod a+x license.sh
 ```
 
-## Configuration
+## :memo: Configuration
 
 You can set you own config in `$HOME/.licenserc`:
 
@@ -56,7 +56,7 @@ author=ishbguy
 #license_name=
 ```
 
-## Usage
+## :notebook: Usage
 
 Generate a license:
 
@@ -94,7 +94,7 @@ List all available licenses:
 $ license.sh -l
 ```
 
-## Contributing
+## :hibiscus: Contributing
 
 1. Fork it
 2. Create your feature branch (`git checkout -b my-new-feature`)
@@ -102,10 +102,10 @@ $ license.sh -l
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-## Authors
+## :boy: Authors
 
 + [ishbguy](https://github.com/ishbguy)
 
-## License
+## :scroll: License :copyright:
 
 Released under the terms of the [MIT License](https://opensource.org/licenses/MIT).
