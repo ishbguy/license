@@ -2,19 +2,30 @@
 
 An opensource software license generator written in shell script and powered by [GitHub's licenses API](https://developer.github.com/v3/licenses/).
 
+## Table of Contents
+
++ [Features](#Features)
++ [Prerequisite](#Prerequisite)
++ [Installation](#Installation)
++ [Configuration](#Configuration)
++ [Usage](#Usage) 
++ [Contributing](#Contributing)
++ [Authors](#Authors)
++ [License](#License)
+
 ## Features
 
 + Support all licenses available on GitHub.
 + Less dependences.
 + Generate without network (except on first run).
-+ Configurable
++ Configurable.
 
 ## Prerequisite
 
-+ [`bash`](https://www.gnu.org/software/bash/bash.html)
-+ [`curl`](https://curl.haxx.se/)
-+ [`jq`](https://stedolan.github.io/jq/)
-+ [`sed`](https://www.gnu.org/software/sed/)
+> + [`bash`](https://www.gnu.org/software/bash/bash.html)
+> + [`curl`](https://curl.haxx.se/)
+> + [`jq`](https://stedolan.github.io/jq/)
+> + [`sed`](https://www.gnu.org/software/sed/)
 
 ## Installation
 
@@ -97,4 +108,4 @@ $ license.sh -l
 
 ## License
 
-[MIT](https://opensource.org/licenses/MIT).
+Released under the terms of the [MIT License](https://opensource.org/licenses/MIT).
