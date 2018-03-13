@@ -4,14 +4,14 @@ An opensource software license generator written in shell script and powered by 
 
 ## Table of Contents
 
-+ [Features](#features)
-+ [Prerequisite](#prerequisite)
-+ [Installation](#installation)
-+ [Configuration](#configuration)
-+ [Usage](#usage) 
-+ [Contributing](#contributing)
-+ [Authors](#authors)
-+ [License](#license-1)
++ [:art: Features](#art-features)
++ [:straight_ruler: Prerequisite](#straight_ruler-prerequisite)
++ [:rocket: Installation](#rocket-installation)
++ [:memo: Configuration](#memo-configuration)
++ [:notebook: Usage](#notebook-usage)
++ [:hibiscus: Contributing](#hibiscus-contributing)
++ [:boy: Authors](#boy-authors)
++ [:scroll: License :copyright:](scroll-license-copyright)
 
 ## :art: Features
 
