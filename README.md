@@ -11,7 +11,7 @@ An opensource software license generator written in shell script and powered by 
 + [Usage](#usage) 
 + [Contributing](#contributing)
 + [Authors](#authors)
-+ [License](#license)
++ [License](#license-1)
 
 ## Features
 
