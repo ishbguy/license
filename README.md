@@ -4,14 +4,14 @@ An opensource software license generator written in shell script and powered by 
 
 ## Table of Contents
 
-+ [Features](#Features)
-+ [Prerequisite](#Prerequisite)
-+ [Installation](#Installation)
-+ [Configuration](#Configuration)
-+ [Usage](#Usage) 
-+ [Contributing](#Contributing)
-+ [Authors](#Authors)
-+ [License](#License)
++ [Features](#features)
++ [Prerequisite](#prerequisite)
++ [Installation](#installation)
++ [Configuration](#configuration)
++ [Usage](#usage) 
++ [Contributing](#contributing)
++ [Authors](#authors)
++ [License](#license)
 
 ## Features
 
