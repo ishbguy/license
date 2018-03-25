@@ -35,14 +35,6 @@ You can get this program with `git`:
 $ git clone https://github.com/ishbguy/license
 ```
 
-or only download the `license.sh`:
-
-```
-$ curl -fLo license.sh \
-         https://raw.githubusercontent.com/ishbguy/license/master/license.sh
-$ chmod a+x license.sh
-```
-
 ## :memo: Configuration
 
 You can set you own config in `$HOME/.licenserc`:
