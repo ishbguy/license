@@ -193,43 +193,47 @@ ${PROGRAM} [-o|n|y|d|l|v|h] [string] license_name
 ${PROGRAM} ${VERSION} is released under the terms of the MIT License.
 "
 
-check_tool "${PREREQUSITE_TOOLS[@]}"
+main() {
+    check_tool "${PREREQUSITE_TOOLS[@]}"
 
-declare -A OPTIONS ARGUMENTS
-getoptions OPTIONS ARGUMENTS "o:n:y:d:ulvh" "$@"
-shift $((OPTIND - 1))
+    declare -A OPTIONS ARGUMENTS
+    getoptions OPTIONS ARGUMENTS "o:n:y:d:ulvh" "$@"
+    shift $((OPTIND - 1))
 
-[[ ${OPTIONS[o]} -eq 1 ]] && LICENSE_NAME=${ARGUMENTS[o]}
-[[ ${OPTIONS[n]} -eq 1 ]] && AUTHOR=${ARGUMENTS[n]}
-[[ ${OPTIONS[y]} -eq 1 ]] && YEAR=${ARGUMENTS[y]}
-[[ ${OPTIONS[d]} -eq 1 ]] && LICENSE_DIR=${ARGUMENTS[d]}
+    [[ ${OPTIONS[o]} -eq 1 ]] && LICENSE_NAME=${ARGUMENTS[o]}
+    [[ ${OPTIONS[n]} -eq 1 ]] && AUTHOR=${ARGUMENTS[n]}
+    [[ ${OPTIONS[y]} -eq 1 ]] && YEAR=${ARGUMENTS[y]}
+    [[ ${OPTIONS[d]} -eq 1 ]] && LICENSE_DIR=${ARGUMENTS[d]}
 
-[[ ${OPTIONS[v]} -eq 1 || ${OPTIONS[h]} -eq 1 ]] && echo -ne "${HELP}" && exit 0
-[[ ${OPTIONS[l]} -eq 1 ]] && list_licenses "${LICENSE_DIR}" && exit 0
+    [[ ${OPTIONS[v]} -eq 1 || ${OPTIONS[h]} -eq 1 ]] && echo -ne "${HELP}" && exit 0
+    [[ ${OPTIONS[l]} -eq 1 ]] && list_licenses "${LICENSE_DIR}" && exit 0
 
-[[ ${OPTIONS[u]} -eq 1 ]] \
-    && download_licenses "${GITHUB_LICENSES_API}" "${LICENSE_DIR}" && exit 0
+    [[ ${OPTIONS[u]} -eq 1 ]] \
+        && download_licenses "${GITHUB_LICENSES_API}" "${LICENSE_DIR}" && exit 0
 
-[[ $# -ne 1 ]] && die "Please give a license."
-TARGET_LICENSE="$1"
+    [[ $# -ne 1 ]] && die "Please give a license."
+    TARGET_LICENSE="$1"
 
-[[ -d ${LICENSE_DIR} ]] \
-    || mkdir -p "${LICENSE_DIR}" || die "Can not create ${LICENSE_DIR}."
+    [[ -d ${LICENSE_DIR} ]] \
+        || mkdir -p "${LICENSE_DIR}" || die "Can not create ${LICENSE_DIR}."
 
-# ensure that there is a needed license or die
-[[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] \
-    || download_licenses "${GITHUB_LICENSES_API}" "${LICENSE_DIR}"
-[[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] \
-    || die "Can not download ${TARGET_LICENSE}."
+    # ensure that there is a needed license or die
+    [[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] \
+        || download_licenses "${GITHUB_LICENSES_API}" "${LICENSE_DIR}"
+    [[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] \
+        || die "Can not download ${TARGET_LICENSE}."
 
-cp "${LICENSE_DIR}/${TARGET_LICENSE}" "${LICENSE_NAME}"
+    cp "${LICENSE_DIR}/${TARGET_LICENSE}" "${LICENSE_NAME}"
 
-# substitute with year and user name.
-if [[ ${TARGET_LICENSE} == "mit" ||\
-    ${TARGET_LICENSE} == "bsd-2-clause" ||\
-    ${TARGET_LICENSE} == "bsd-3-clause" ]]; then
+    # substitute with year and user name.
+    if [[ ${TARGET_LICENSE} == "mit" ||\
+        ${TARGET_LICENSE} == "bsd-2-clause" ||\
+        ${TARGET_LICENSE} == "bsd-3-clause" ]]; then
     sed -ri -e "s/\\[year\\]/${YEAR}/;s/\\[fullname\\]/${AUTHOR}/" \
         "${LICENSE_NAME}"
-fi
+    fi
+}
+
+main "$@"
 
 # vim:ft=sh:ts=4:sw=4
