@@ -58,22 +58,19 @@ author=ishbguy
 # licenses download directory
 license_dir=~/.license
 
-# license output file name
-license_name=LICENSE
-
 # backgroup jobs when downloading licenses
 license_jobs=8
 ```
 
 ## :notebook: Usage
 
-Generate a license:
+Generate a license to standard output
 
 ```
 $ license.sh mit
 ```
 
-Rename a default LICENSE name:
+Generate a license to a file:
 
 ```
 $ license.sh -o LICENSE.txt mit
@@ -117,4 +114,4 @@ $ license.sh -l
 
 ## :scroll: License
 
-Released under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+Released under the terms of [MIT License](https://opensource.org/licenses/MIT).
