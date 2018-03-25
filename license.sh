@@ -4,22 +4,19 @@
 
 #set -x
 
-function die()
-{
+die() {
     echo "$@"
     exit 1
 }
 
-function check_tool()
-{
+check_tool() {
     for TOOL in "$@"; do
         which "${TOOL}" >/dev/null 2>&1 \
             || die "You need to install ${TOOL}"
     done
 }
 
-function ensure()
-{
+ensure() {
     local EXPR="$1"
     local MESSAGE="$2"
 
@@ -29,8 +26,7 @@ function ensure()
     [ ${EXPR} ] || die "${FUNCNAME[1]}() args error${MESSAGE}."
 }
 
-function ensure_not_empty()
-{
+ensure_not_empty() {
     ensure "$# -ge 1" "Need one or more args"
 
     for arg in "$@"; do
@@ -40,8 +36,7 @@ function ensure_not_empty()
 }
 
 # echo a message with color
-function cecho()
-{
+cecho() {
     ensure "2 == $#" "Need a COLOR name and a MESSAGE"
     ensure_not_empty "$@"
 
@@ -63,8 +58,7 @@ function cecho()
     echo -ne "${COLOR}${MESSAGE}[0m"
 }
 
-function read_config()
-{
+read_config() {
     ensure "2 == $#" "Need LICENSE_CONFIGS array and CONFIG_FILE"
     ensure_not_empty "$@"
 
@@ -95,8 +89,7 @@ function read_config()
     done <"${TMP_FILE}"
 }
 
-function getoptions()
-{
+getoptions() {
     ensure "$# -ge 3" "Need OPTIONS and ARGUMENTS"
     ensure_not_empty "$1" "$2" "$3"
 
@@ -114,8 +107,7 @@ function getoptions()
     shift $((OPTIND - 1))
 }
 
-function download_licenses()
-{
+download_licenses() {
     ensure "2 == $#" "Need a github licenses API URL and license directory"
     ensure_not_empty "$@"
 
@@ -148,8 +140,7 @@ function download_licenses()
     wait 2>/dev/null
 }
 
-function list_licenses()
-{
+list_licenses() {
     ensure "1 == $#" "Need a license directory"
     ensure_not_empty "$@"
 
