@@ -1,6 +1,15 @@
 # [license](https://github.com/ishbguy/license)
 
-An opensource software license generator written in shell script and powered by [GitHub's licenses API](https://developer.github.com/v3/licenses/).
+[![Codacy][codacysvg]][codacy] [![Version][versvg]][ver] [![License][licsvg]][lic]
+
+[codacysvg]: https://api.codacy.com/project/badge/Grade/03ce339293c24c08870ebde7e0b793e4
+[codacy]: https://www.codacy.com/app/ishbguy/license?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ishbguy/license&amp;utm_campaign=Badge_Grade
+[versvg]: https://img.shields.io/badge/version-v0.1.0-lightgrey.svg
+[ver]: https://img.shields.io/badge/version-v0.1.0-lightgrey.svg
+[licsvg]: https://img.shields.io/badge/license-MIT-green.svg
+[lic]: https://github.com/ishbguy/baux/blob/master/LICENSE
+
+An opensource software license generator written in shell script base on [baux](https://github.com/ishbguy/baux) and powered by [GitHub's licenses API](https://developer.github.com/v3/licenses/).
 
 ## Table of Contents
 
@@ -23,9 +32,11 @@ An opensource software license generator written in shell script and powered by 
 ## :straight_ruler: Prerequisite
 
 > + [`bash`](https://www.gnu.org/software/bash/bash.html)
+> + [`coreutils`](https://www.gnu.org/software/coreutils/coreutils.html)
+> + [`sed`](https://www.gnu.org/software/sed/)
 > + [`curl`](https://curl.haxx.se/)
 > + [`jq`](https://stedolan.github.io/jq/)
-> + [`sed`](https://www.gnu.org/software/sed/)
+> + [`baux`](https://github.com/ishbguy/baux)
 
 ## :rocket: Installation
 
