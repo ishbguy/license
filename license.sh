@@ -19,10 +19,9 @@ YEAR=$(date +%Y)
 TARGET_LICENSE=
 LICENSE_NAME=
 LICENSE_JOBS="${LICENSE_CONFIGS[license_jobs]:-8}"
-PROGRAM=$(basename "$0")
-VERSION="v0.0.1"
+VERSION="v0.1.0"
 HELP="\
-${PROGRAM} [-o|n|y|d|l|v|h] [string] license_name
+$(proname) [-o|n|y|d|l|v|h] [string] license_name
 
     -o  Use the string as the output name.
     -n  Use the string as the author name.
@@ -33,8 +32,7 @@ ${PROGRAM} [-o|n|y|d|l|v|h] [string] license_name
     -v  Print the version number.
     -h  Print this help message.
 
-${PROGRAM} ${VERSION} is released under the terms of the MIT License.
-"
+This program is released under the terms of MIT License."
 
 download_licenses() {
     ensure "2 == $#" "Need a github licenses API URL and license directory"
@@ -124,7 +122,7 @@ license() {
     [[ ${OPTIONS[d]} -eq 1 ]] && LICENSE_DIR=${ARGUMENTS[d]}
 
     # execute prior task and exit
-    [[ ${OPTIONS[v]} -eq 1 || ${OPTIONS[h]} -eq 1 ]] && echo -ne "${HELP}" && exit 0
+    [[ ${OPTIONS[v]} -eq 1 || ${OPTIONS[h]} -eq 1 ]] && usage && exit 0
     [[ ${OPTIONS[l]} -eq 1 ]] && list_licenses "${LICENSE_DIR}" && exit 0
     [[ ${OPTIONS[u]} -eq 1 ]] \
         && download_licenses "${GITHUB_LICENSES_API}" "${LICENSE_DIR}" && exit 0
@@ -142,6 +140,8 @@ license() {
         || die "Can not download ${TARGET_LICENSE}."
 
     gen_license "${TARGET_LICENSE}" "${LICENSE_NAME}"
+
+    return $BAUX_EXIT_CODE
 }
 
 [[ ${FUNCNAME[0]} == "main" ]] \
