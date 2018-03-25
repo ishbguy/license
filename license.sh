@@ -79,7 +79,7 @@ function read_config()
 
     TMP_FILE=$(mktemp)
     # use trap to rm temp file and recover old IFS
-    trap "rm -f ${TMP_FILE}; IFS=${OLD_IFS}" RETURN
+    trap 'rm -f ${TMP_FILE}; IFS=${OLD_IFS}' RETURN
 
     # remove blank lines, comments, leading and tailing spaces
     sed -re '/^\s*$/d;/^#.*/d;s/#.*//g;s/^\s+//;s/\s+$//' \
@@ -129,7 +129,7 @@ function download_licenses()
     exec 8<>"${TMP_FILE}"
     
     # use trap to clean up when function return
-    trap "exec 8<&-; exec 8>&-; rm -f ${TMP_FILE}" RETURN
+    trap 'exec 8<&-; exec 8>&-; rm -f ${TMP_FILE}' RETURN
 
     # fullfill fifo file for later read
     for ((i = 0; i < LICENSE_JOBS; i++)); do
