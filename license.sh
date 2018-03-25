@@ -155,6 +155,31 @@ list_licenses() {
     done
 }
 
+gen_license() {
+    local lic="$1"
+    local file="$2"
+
+    if [[ -n $file ]]; then
+        [[ -e $file ]] && die "$file alredy exists."
+        # create an empty file
+        echo -n >"$file" || die "Fail to create $file."
+
+        # redirect stdout to $file
+        exec 3>"$file"
+        exec 1>&3
+        trap 'exec 3>&1; exec 3>&-' RETURN
+    fi
+
+    if [[ ${lic} == "mit" ||\
+        ${lic} == "bsd-2-clause" ||\
+        ${lic} == "bsd-3-clause" ]]; then
+        sed -r -e "s/\\[year\\]/${YEAR}/;s/\\[fullname\\]/${AUTHOR}/" \
+            "${LICENSE_DIR}/$lic"
+    else
+        cat "${LICENSE_DIR}/$lic"
+    fi
+}
+
 LICENSE_CONFIG_FILE="${HOME}/.licenserc"
 declare -A LICENSE_CONFIGS
 [[ -e ${LICENSE_CONFIG_FILE} ]] \
@@ -165,7 +190,7 @@ LICENSE_DIR="${LICENSE_CONFIGS[license_dir]:-${HOME}/.license}"
 AUTHOR="${LICENSE_CONFIGS[author]:-${USER}}"
 YEAR=$(date +%Y)
 TARGET_LICENSE=
-LICENSE_NAME="${LICENSE_CONFIGS[license_name]:-LICENSE}"
+LICENSE_NAME=
 LICENSE_JOBS="${LICENSE_CONFIGS[license_jobs]:-8}"
 PROGRAM=$(basename "$0")
 VERSION="v0.0.1"
@@ -187,18 +212,20 @@ ${PROGRAM} ${VERSION} is released under the terms of the MIT License.
 main() {
     check_tool "${PREREQUSITE_TOOLS[@]}"
 
+    # parse options
     declare -A OPTIONS ARGUMENTS
     getoptions OPTIONS ARGUMENTS "o:n:y:d:ulvh" "$@"
     shift $((OPTIND - 1))
 
+    # get user specified var
     [[ ${OPTIONS[o]} -eq 1 ]] && LICENSE_NAME=${ARGUMENTS[o]}
     [[ ${OPTIONS[n]} -eq 1 ]] && AUTHOR=${ARGUMENTS[n]}
     [[ ${OPTIONS[y]} -eq 1 ]] && YEAR=${ARGUMENTS[y]}
     [[ ${OPTIONS[d]} -eq 1 ]] && LICENSE_DIR=${ARGUMENTS[d]}
 
+    # execute prior task and exit
     [[ ${OPTIONS[v]} -eq 1 || ${OPTIONS[h]} -eq 1 ]] && echo -ne "${HELP}" && exit 0
     [[ ${OPTIONS[l]} -eq 1 ]] && list_licenses "${LICENSE_DIR}" && exit 0
-
     [[ ${OPTIONS[u]} -eq 1 ]] \
         && download_licenses "${GITHUB_LICENSES_API}" "${LICENSE_DIR}" && exit 0
 
@@ -214,15 +241,7 @@ main() {
     [[ -e ${LICENSE_DIR}/${TARGET_LICENSE} ]] \
         || die "Can not download ${TARGET_LICENSE}."
 
-    cp "${LICENSE_DIR}/${TARGET_LICENSE}" "${LICENSE_NAME}"
-
-    # substitute with year and user name.
-    if [[ ${TARGET_LICENSE} == "mit" ||\
-        ${TARGET_LICENSE} == "bsd-2-clause" ||\
-        ${TARGET_LICENSE} == "bsd-3-clause" ]]; then
-    sed -ri -e "s/\\[year\\]/${YEAR}/;s/\\[fullname\\]/${AUTHOR}/" \
-        "${LICENSE_NAME}"
-    fi
+    gen_license "${TARGET_LICENSE}" "${LICENSE_NAME}"
 }
 
 main "$@"
