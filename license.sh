@@ -4,108 +4,37 @@
 
 #set -x
 
-die() {
-    echo "$@"
-    exit 1
-}
+source baux/lib/baux.sh
+import baux/lib/utili.sh
 
-check_tool() {
-    for TOOL in "$@"; do
-        which "${TOOL}" >/dev/null 2>&1 \
-            || die "You need to install ${TOOL}"
-    done
-}
+LICENSE_CONFIG_FILE="${HOME}/.licenserc"
+declare -A LICENSE_CONFIGS
+[[ -e ${LICENSE_CONFIG_FILE} ]] \
+    && read_config LICENSE_CONFIGS "${LICENSE_CONFIG_FILE}"
+GITHUB_LICENSES_API="https://api.github.com/licenses"
+PREREQUSITE_TOOLS=(curl jq sed)
+LICENSE_DIR="${LICENSE_CONFIGS[license_dir]:-${HOME}/.license}"
+AUTHOR="${LICENSE_CONFIGS[author]:-${USER}}"
+YEAR=$(date +%Y)
+TARGET_LICENSE=
+LICENSE_NAME=
+LICENSE_JOBS="${LICENSE_CONFIGS[license_jobs]:-8}"
+PROGRAM=$(basename "$0")
+VERSION="v0.0.1"
+HELP="\
+${PROGRAM} [-o|n|y|d|l|v|h] [string] license_name
 
-ensure() {
-    local EXPR="$1"
-    local MESSAGE="$2"
+    -o  Use the string as the output name.
+    -n  Use the string as the author name.
+    -y  Use the string as the year of the license.
+    -d  Use the string as the default license directory.
+    -u  Update licenses.
+    -l  List all available licenses.
+    -v  Print the version number.
+    -h  Print this help message.
 
-    [[ $# -lt 1 ]] && die "${FUNCNAME[0]}() args error."
-    
-    [[ -n $MESSAGE ]] && MESSAGE=": ${MESSAGE}"
-    [ ${EXPR} ] || die "${FUNCNAME[1]}() args error${MESSAGE}."
-}
-
-ensure_not_empty() {
-    ensure "$# -ge 1" "Need one or more args"
-
-    for arg in "$@"; do
-        [[ -n ${arg} ]] || die \
-            "${FUNCNAME[1]}() args error: Arguments should not be empty."
-    done
-}
-
-# echo a message with color
-cecho() {
-    ensure "2 == $#" "Need a COLOR name and a MESSAGE"
-    ensure_not_empty "$@"
-
-    local COLOR_NAME="$1"
-    local MESSAGE="$2"
-    local COLOR=
-
-    case "${COLOR_NAME}" in
-        bla|black)  COLOR="\\x1B[30m" ;;
-        re|red)     COLOR="\\x1B[31m" ;;
-        gr|green)   COLOR="\\x1B[32m" ;;
-        ye|yellow)  COLOR="\\x1B[33m" ;;
-        blu|blue)   COLOR="\\x1B[34m" ;;
-        ma|magenta) COLOR="\\x1B[35m" ;;
-        cy|cyan)    COLOR="\\x1B[36m" ;;
-        wh|white)   COLOR="\\x1B[37m" ;;
-        *)          COLOR="\\x1B[34m" ;;
-    esac
-    echo -ne "${COLOR}${MESSAGE}[0m"
-}
-
-read_config() {
-    ensure "2 == $#" "Need LICENSE_CONFIGS array and CONFIG_FILE"
-    ensure_not_empty "$@"
-
-    # make a ref of config array
-    local -n CONFIGS="$1"
-    local CONFIG_FILE="$2"
-    local OLD_IFS="${IFS}"
-    local TMP_FILE
-
-    # return if file does not exist
-    [[ -e ${CONFIG_FILE} ]] || return 1
-
-    TMP_FILE=$(mktemp)
-    # use trap to rm temp file and recover old IFS
-    trap 'rm -f ${TMP_FILE}; IFS=${OLD_IFS}' RETURN
-
-    # remove blank lines, comments, leading and tailing spaces
-    sed -re '/^\s*$/d;/^#.*/d;s/#.*//g;s/^\s+//;s/\s+$//' \
-        "${CONFIG_FILE}" >"${TMP_FILE}"
-
-    # read name-value pairs from config file
-    while IFS="=" read -r NAME VALUE; do
-        # trim leading and tailing double quote
-        NAME="${NAME#\"}"; NAME="${NAME%\"}"
-        VALUE="${VALUE#\"}"; VALUE="${VALUE%\"}"
-        # convert uppercase to lowercase
-        CONFIGS["${NAME,,}"]="${VALUE}"
-    done <"${TMP_FILE}"
-}
-
-getoptions() {
-    ensure "$# -ge 3" "Need OPTIONS and ARGUMENTS"
-    ensure_not_empty "$1" "$2" "$3"
-
-    local -n __options="$1"
-    local -n __arguments="$2"
-    local argstring="$3"
-    shift 3
-
-    OPTIND=1
-    while getopts "${argstring}" OPT; do
-        [[ ${OPT} == ":" || ${OPT} == "?" ]] && die "${HELP}"
-        __options[${OPT}]=1
-        __arguments[${OPT}]="${OPTARG}"
-    done
-    shift $((OPTIND - 1))
-}
+${PROGRAM} ${VERSION} is released under the terms of the MIT License.
+"
 
 download_licenses() {
     ensure "2 == $#" "Need a github licenses API URL and license directory"
@@ -180,36 +109,7 @@ gen_license() {
     fi
 }
 
-LICENSE_CONFIG_FILE="${HOME}/.licenserc"
-declare -A LICENSE_CONFIGS
-[[ -e ${LICENSE_CONFIG_FILE} ]] \
-    && read_config LICENSE_CONFIGS "${LICENSE_CONFIG_FILE}"
-GITHUB_LICENSES_API="https://api.github.com/licenses"
-PREREQUSITE_TOOLS=(curl jq sed)
-LICENSE_DIR="${LICENSE_CONFIGS[license_dir]:-${HOME}/.license}"
-AUTHOR="${LICENSE_CONFIGS[author]:-${USER}}"
-YEAR=$(date +%Y)
-TARGET_LICENSE=
-LICENSE_NAME=
-LICENSE_JOBS="${LICENSE_CONFIGS[license_jobs]:-8}"
-PROGRAM=$(basename "$0")
-VERSION="v0.0.1"
-HELP="\
-${PROGRAM} [-o|n|y|d|l|v|h] [string] license_name
-
-    -o  Use the string as the output name.
-    -n  Use the string as the author name.
-    -y  Use the string as the year of the license.
-    -d  Use the string as the default license directory.
-    -u  Update licenses.
-    -l  List all available licenses.
-    -v  Print the version number.
-    -h  Print this help message.
-
-${PROGRAM} ${VERSION} is released under the terms of the MIT License.
-"
-
-main() {
+license() {
     check_tool "${PREREQUSITE_TOOLS[@]}"
 
     # parse options
@@ -244,6 +144,7 @@ main() {
     gen_license "${TARGET_LICENSE}" "${LICENSE_NAME}"
 }
 
-main "$@"
+[[ ${FUNCNAME[0]} == "main" ]] \
+    && license "$@"
 
 # vim:ft=sh:ts=4:sw=4
