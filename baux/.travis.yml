@@ -1,0 +1,14 @@
+language: generic
+
+addons:
+    apt:
+        packages:
+            - git
+            - bash
+            - sed
+
+before_script:
+    - git clone https://github.com/sstephenson/bats.git $HOME/bats
+    - export PATH=$PATH:$HOME/bats/bin
+
+script: make
