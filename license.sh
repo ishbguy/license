@@ -5,12 +5,12 @@
 #set -x
 
 # source guard
-[[ $LICENCE_SOUECED -eq 1 ]] && return
+[[ $LICENSE_SOUECED -eq 1 ]] && return
 declare -gr LICENSE_SOUECED=1
-declare -gr LICENSE_ABS_DIR=$(builtin cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd)
+declare -gr LICENSE_ABS_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
-source $LICENSE_ABS_DIR/baux/lib/baux.sh
-import $LICENSE_ABS_DIR/baux/lib/utili.sh
+source "$LICENSE_ABS_DIR"/baux/lib/baux.sh
+import "$LICENSE_ABS_DIR"/baux/lib/utili.sh
 
 LICENSE_CONFIG_FILE="${HOME}/.licenserc"
 declare -A LICENSE_CONFIGS
@@ -146,7 +146,7 @@ license() {
 
     gen_license "${TARGET_LICENSE}" "${LICENSE_NAME}"
 
-    return $BAUX_EXIT_CODE
+    return "$BAUX_EXIT_CODE"
 }
 
 [[ ${FUNCNAME[0]} == "main" ]] \
