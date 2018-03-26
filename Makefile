@@ -4,4 +4,4 @@ all : test
 
 .PHONY : test
 test :
-	$(TEST_DIR)/test/test-license.sh
+	$(TEST_DIR)/test-license.sh
