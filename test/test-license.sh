@@ -10,8 +10,8 @@ trap 'rm -rf test-license' EXIT SIGINT
 
 (license -h)
 (license -v)
-(license mit)
-(license -o test-license/test-mit mit)
-(license -n TEST -y xxxx mit)
 (license -d test-license -u)
 (license -d test-license -l)
+(license -d test-license mit)
+(license -o test-license/test-mit mit)
+(license -n TEST -y xxxx mit)
