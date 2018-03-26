@@ -4,8 +4,13 @@
 
 #set -x
 
-source baux/lib/baux.sh
-import baux/lib/utili.sh
+# source guard
+[[ $LICENCE_SOUECED -eq 1 ]] && return
+declare -gr LICENSE_SOUECED=1
+declare -gr LICENSE_ABS_DIR=$(builtin cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd)
+
+source $LICENSE_ABS_DIR/baux/lib/baux.sh
+import $LICENSE_ABS_DIR/baux/lib/utili.sh
 
 LICENSE_CONFIG_FILE="${HOME}/.licenserc"
 declare -A LICENSE_CONFIGS
