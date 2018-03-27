@@ -11,7 +11,7 @@ trap 'rm -rf test-license' EXIT SIGINT ERR
 run_ok '$status -eq 1 && $output == "Please give a license."' license
 run_ok '$status -eq 0' license -h
 run_ok '$status -eq 0' license -v
-run_ok '$status -eq 1 && $output =~ "not a directory"' license -l
+run_ok '$status -eq 1 && $output =~ "not a directory"' license -d dir -l
 run_ok '$status -eq 0' license -d test-license -u
 run_ok '$status -eq 0 && $(echo $output | wc -l) -gt 0' license -d test-license -l
 run_ok '$status -eq 0' license -d test-license mit
