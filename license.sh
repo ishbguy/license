@@ -105,8 +105,7 @@ gen_license() {
     if [[ ${lic} == "mit" ||\
         ${lic} == "bsd-2-clause" ||\
         ${lic} == "bsd-3-clause" ]]; then
-        sed -r 's/\[year\]/'"${YEAR}"'/;s/\[fullname\]/'"${AUTHOR}"'/' \
-            "${LICENSE_DIR}/$lic"
+        eval "sed -r -e 's/\\[year\\]/${YEAR}/;s/\\[fullname\\]/${AUTHOR}/' ${LICENSE_DIR}/$lic"
     else
         cat "${LICENSE_DIR}/$lic"
     fi
