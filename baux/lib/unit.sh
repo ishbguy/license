@@ -9,7 +9,7 @@
 # source guard
 [[ $BAUX_UNIT_SOURCED -eq 1 ]] && return
 declare -gr BAUX_UNIT_SOURCED=1
-declare -gr BAUX_UNIT_ABS_DIR=$(builtin cd "$(dirname "${BASH_SOURCE[0]}")"; pwd)
+declare -gr BAUX_UNIT_ABS_DIR="$(dirname $(realpath "${BASH_SOURCE[0]}"))"
 
 # source dependences
 if [[ $BAUX_SOUECED -ne 1 ]]; then
@@ -148,6 +148,20 @@ unlike() {
     __diag "$result" "'$expect'" "'$actual'" 
 }
 
+run_ok() {
+    ensure "$# -ge 2" "Need an expression and a command."
+    ensure_not_empty "$1"
+    
+    local expr="$1"; shift
+    local cmds="$*"
+    local status output
+    
+    output=$(eval "$@" 2>&1)
+    status=$?
+
+    ok "$expr" "test run: $cmds"
+}
+
 subtest() {
     ensure "$# -eq 2" "Need test name and test instructions"
     ensure_not_empty "$1"
@@ -196,6 +210,7 @@ summary() {
             ${BAUX_UNIT_PROMPTS[$it]}): ${BAUX_UNIT_COUNTS[$it]}, "
     done
     echo
+    return ${BAUX_UNIT_COUNTS[FAIL]}
 }
 
 # vim:ft=sh:ts=4:sw=4

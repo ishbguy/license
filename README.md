@@ -1,7 +1,11 @@
 # [license](https://github.com/ishbguy/license)
 
-[![Codacy][codacysvg]][codacy] [![Version][versvg]][ver] [![License][licsvg]][lic]
+[![Travis][travissvg]][travis] [![Codecov][codecovsvg]][codecov] [![Codacy][codacysvg]][codacy] [![Version][versvg]][ver] [![License][licsvg]][lic]
 
+[travissvg]: https://www.travis-ci.org/ishbguy/license.svg?branch=master
+[travis]: https://www.travis-ci.org/ishbguy/license
+[codecovsvg]: https://codecov.io/gh/ishbguy/license/branch/master/graph/badge.svg
+[codecov]: https://codecov.io/gh/ishbguy/license
 [codacysvg]: https://api.codacy.com/project/badge/Grade/03ce339293c24c08870ebde7e0b793e4
 [codacy]: https://www.codacy.com/app/ishbguy/license?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ishbguy/license&amp;utm_campaign=Badge_Grade
 [versvg]: https://img.shields.io/badge/version-v0.1.0-lightgrey.svg
