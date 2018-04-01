@@ -25,6 +25,8 @@ declare -gA BAUX_UNIT_PROMPTS
 declare -gA BAUX_UNIT_COLORS
 declare -gA BAUX_UNIT_COUNTS
 declare -gi BAUX_UNIT_SKIP_FLAG=0
+declare -gi BAUX_UNIT_STATUS_LEN=0
+declare -g  BAUX_UNIT_PAD_SPACES=""
 
 BAUX_UNIT_COUNTS[TOTAL]=0
 BAUX_UNIT_COUNTS[PASS]=0
@@ -40,6 +42,16 @@ BAUX_UNIT_COLORS[TOTAL]="blue"
 BAUX_UNIT_COLORS[PASS]="green"
 BAUX_UNIT_COLORS[FAIL]="red"
 BAUX_UNIT_COLORS[SKIP]="yellow"
+BAUX_UNIT_COLORS[EMSG]="red"
+
+for s in "${!BAUX_UNIT_COUNTS[@]}"; do
+    [[ ${#s} -gt $BAUX_UNIT_STATUS_LEN ]] \
+        && BAUX_UNIT_STATUS_LEN=${#s}
+done
+
+for ((i = 1; i < BAUX_UNIT_STATUS_LEN; i++)); do
+    BAUX_UNIT_PAD_SPACES+=" "
+done
 
 __judge() {
     local expr="$1"
@@ -63,14 +75,14 @@ __issue() {
     local -u result="$1"
     local msg="$2"
 
-    echo "${BAUX_UNIT_COUNTS[TOTAL]} $msg $(cecho \
+    echo -e "$BAUX_UNIT_PAD_SPACES ${BAUX_UNIT_COUNTS[TOTAL]} $msg \x1B[1G$(cecho \
         "${BAUX_UNIT_COLORS[$result]}" "${BAUX_UNIT_PROMPTS[$result]}")"
 }
 
 __location() {
     local idx="$(($1+1))"
     local -a frame=($(frame "$idx"| sed -r 's/\s+/\n/g'))
-    local cmd=$(sed -ne "${frame[1]}p" "${frame[0]}" | sed -r 's/^\s+//')
+    local cmd=$(sed -ne "${frame[1]}p" "${frame[0]}" 2>/dev/null | sed -r 's/^\s+//')
     echo "$cmd [${frame[0]}:${frame[1]}:${frame[3]}]"
 }
 
@@ -81,9 +93,9 @@ __diag() {
     [[ $result != "${BAUX_UNIT_PROMPTS[FAIL]}" ]] && return 0
 
     # fail
-    cecho red "$(__location 1)" >&2
-    cecho red "Expect: $expect" >&2
-    cecho red "Actual: $actual" >&2
+    cecho "${BAUX_UNIT_COLORS[EMSG]}" "$BAUX_UNIT_PAD_SPACES $(__location 1)" >&2
+    cecho "${BAUX_UNIT_COLORS[EMSG]}" "$BAUX_UNIT_PAD_SPACES Expect: $expect" >&2
+    cecho "${BAUX_UNIT_COLORS[EMSG]}" "$BAUX_UNIT_PAD_SPACES Actual: $actual" >&2
     return 1
 }
 
@@ -97,7 +109,7 @@ ok() {
     __judge "$expr"
     __issue "$result" "$msg"
     [[ $result != "${BAUX_UNIT_PROMPTS[FAIL]}" ]] \
-        || { cecho red "$(__location 0)"; return 1; }
+        || { cecho "${BAUX_UNIT_COLORS[EMSG]}" "$(__location 0)" >&2; return 1; }
 }
 
 is() {
@@ -154,12 +166,21 @@ run_ok() {
     
     local expr="$1"; shift
     local cmds="$*"
+    local msg="test run: $cmds"
+    local -u result
     local status output
     
     output=$(eval "$@" 2>&1)
     status=$?
 
-    ok "$expr" "test run: $cmds"
+    __judge "$expr"
+    __issue "$result" "$msg"
+    [[ $result != "${BAUX_UNIT_PROMPTS[FAIL]}" ]] \
+        || { \
+        cecho "${BAUX_UNIT_COLORS[EMSG]}" "$BAUX_UNIT_PAD_SPACES $(__location 0)" >&2; \
+        cecho "${BAUX_UNIT_COLORS[EMSG]}" "$BAUX_UNIT_PAD_SPACES Status: $status" >&2; \
+        cecho "${BAUX_UNIT_COLORS[EMSG]}" "$BAUX_UNIT_PAD_SPACES Output: '$output'" >&2; \
+        return 1; }
 }
 
 subtest() {
@@ -169,6 +190,7 @@ subtest() {
     local name="$1"
     local tests="$2"
     local encode_name=$(echo "$name" | sed -r 's/[[:punct:][:space:]]/_/g')
+    local err_msg status
 
     eval "$encode_name() {
         BAUX_UNIT_COUNTS[TOTAL]=0
@@ -179,7 +201,7 @@ subtest() {
     }" &>/dev/null || die "subtest \"$name\" init fail."
 
     ((++BAUX_UNIT_COUNTS[TOTAL]))
-    echo -ne "${BAUX_UNIT_COUNTS[TOTAL]} subtest: $name "
+    echo -ne "$BAUX_UNIT_PAD_SPACES ${BAUX_UNIT_COUNTS[TOTAL]} subtest: $name "
 
     # return if skip
     if [[ $BAUX_UNIT_SKIP_FLAG -eq 1 ]]; then
@@ -189,15 +211,18 @@ subtest() {
         return 0
     fi
     # exec in sub shell for avoiding exit
-    if (eval "$encode_name" >/dev/null); then
+    err_msg=$(eval "$encode_name" 2>&1 >/dev/null)
+    status="$?"
+    if [[ $status -eq 0 ]]; then
         ((++BAUX_UNIT_COUNTS[PASS]))
-        cecho "${BAUX_UNIT_COLORS[PASS]}" "${BAUX_UNIT_PROMPTS[PASS]}"
-        return 0
+        cecho "${BAUX_UNIT_COLORS[PASS]}" "\x1B[1G${BAUX_UNIT_PROMPTS[PASS]}"
     else
         ((++BAUX_UNIT_COUNTS[FAIL]))
-        cecho "${BAUX_UNIT_COLORS[FAIL]}" "${BAUX_UNIT_PROMPTS[FAIL]}"
-        return 1
+        cecho "${BAUX_UNIT_COLORS[FAIL]}" "\x1B[1G${BAUX_UNIT_PROMPTS[FAIL]}" >&2
+        cecho "${BAUX_UNIT_COLORS[EMSG]}" "$BAUX_UNIT_PAD_SPACES $(__location 0)" >&2
+        echo -e "$err_msg" >&2
     fi
+    return $status
 }
 
 skip() {
