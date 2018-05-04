@@ -3,7 +3,7 @@
 declare -gr LICENSE_TEST_ABS_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
 source "$LICENSE_TEST_ABS_DIR/../license.sh"
-import "$LICENSE_TEST_ABS_DIR/../baux/lib/unit.sh"
+import "$LICENSE_TEST_ABS_DIR/../baux/lib/test.sh"
 
 mkdir -p test-license || die "Can not mkdir."
 trap 'rm -rf test-license' EXIT SIGINT
