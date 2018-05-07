@@ -33,10 +33,43 @@ $(proname) [-o|n|y|d|u|l|v|h] [string] license_name
     -d  Use the string as the default license directory.
     -u  Update licenses.
     -l  List all available licenses.
+    -c  Show the infomation to choose a license.
     -v  Print the version number.
     -h  Print this help message.
 
 This program is released under the terms of MIT License."
+
+LICENSE_CHOOSE="\
+                    Choose an open source license
+
+            $(cecho yellow "{ Which of the following best describes your situation? }")
+
+1. I want it simple and permissive.
+
+    The $(cecho blue "MIT License") is a permissive license that is short and to the point. 
+    It lets people do anything they want with your code as long as they provide
+    attribution back to you and don't hold you liable.
+
+    Babel, .NET Core, and Rails use the MIT License.
+
+2. I'm concerned about patents.
+
+    The $(cecho blue "Apache License 2.0") is a permissive license similar to the MIT License,
+    but also provides an express grant of patent rights from contributors to users.
+
+    Kubernetes, PDF.js, and Swift use the Apache License 2.0.
+
+3. I care about sharing improvements.
+
+    The $(cecho blue "GNU GPLv3") is a copyleft license that requires anyone who distributes your
+    code or a derivative work to make the source available under the same terms,
+    and also provides an express grant of patent rights from contributors to users.
+
+    Ansible, Bash, and GIMP use the GNU GPLv3.
+
+                $(cecho yellow "{ What if none of these work for me? }")
+
+For more licenses you can find in $(cecho blue "https://choosealicense.com/")"
 
 download_licenses() {
     ensure "$# -eq 1" "Need a directory to save licenses."
@@ -86,6 +119,8 @@ list_licenses() {
     done
 }
 
+choose_license() { echo "$LICENSE_CHOOSE"; }
+
 gen_license() {
     local lic="$1"
     local file="$2"
@@ -115,7 +150,7 @@ license() {
 
     # parse options
     declare -A options arguments
-    getoptions options arguments "o:n:y:d:ulvh" "$@"
+    getoptions options arguments "o:n:y:d:ulcvh" "$@"
     shift $((OPTIND - 1))
 
     # get user specified var
@@ -127,6 +162,7 @@ license() {
     # execute prior task and exit
     [[ ${options[v]} -eq 1 || ${options[h]} -eq 1 ]] && usage && exit 0
     [[ ${options[l]} -eq 1 ]] && list_licenses "${LICENSE_DIR}" && exit 0
+    [[ ${options[c]} -eq 1 ]] && choose_license && exit 0
     [[ ${options[u]} -eq 1 ]] \
         && download_licenses "${LICENSE_DIR}" && exit 0
 
