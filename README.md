@@ -107,6 +107,12 @@ List all available licenses:
 $ license.sh -l
 ```
 
+Show information for choosing a license:
+
+```
+$ license.sh -c
+```
+
 ## :hibiscus: Contributing
 
 1. Fork it
