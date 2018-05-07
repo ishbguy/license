@@ -12,7 +12,7 @@ declare -gr BAUX_VAR_SOURCED=1
 declare -gr BAUX_VAR_ABS_DIR="$(dirname $(realpath "${BASH_SOURCE[0]}"))"
 
 # source dependences
-if [[ $BAUX_SOUECED -ne 1 ]]; then
+if [[ $BAUX_SOURCED -ne 1 ]]; then
     [[ ! -e $BAUX_VAR_ABS_DIR/baux.sh ]] \
         && { echo "Can not source the dependent script baux.sh." >&2; exit 1; }
     source "$BAUX_VAR_ABS_DIR/baux.sh"
@@ -61,13 +61,13 @@ istype() {
 }
 
 # test variabe declare
-is_array() { istype array "$@"; }
-is_map() { istype map "$@"; }
-is_ref() { istype reference "$@"; }
-is_int() { istype integer "$@"; }
-is_lower() { istype lower "$@"; }
-is_upper() { istype upper "$@"; }
-is_export() { istype export "$@"; }
-is_func() { istype function "$@"; }
+type_array() { istype array "$@"; }
+type_map() { istype map "$@"; }
+type_ref() { istype reference "$@"; }
+type_int() { istype integer "$@"; }
+type_lower() { istype lower "$@"; }
+type_upper() { istype upper "$@"; }
+type_export() { istype export "$@"; }
+type_func() { istype function "$@"; }
 
 # vim:ft=sh:ts=4:sw=4
