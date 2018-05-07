@@ -7,8 +7,8 @@
     && { echo "Only allow to be sourced, not for running." >&2; exit 1; }
 
 # source guard
-[[ $BAUX_SOUECED -eq 1 ]] && return
-declare -gr BAUX_SOUECED=1
+[[ $BAUX_SOURCED -eq 1 ]] && return
+declare -gr BAUX_SOURCED=1
 declare -gr BAUX_ABS_DIR="$(dirname $(realpath "${BASH_SOURCE[0]}"))"
 
 # source dependences
@@ -60,10 +60,10 @@ import() {
 
     for file in "$@"; do
         [[ -e $file ]] || die "$file does not exist."
-        # ensure source one time
-        [[ -z ${BAUX_IMPORT_FILES[$file]} ]] || continue
-        source "$file" || die "Can not import $file."
         local file_path=$(realpath "$file")
+        # ensure source one time
+        [[ -z ${BAUX_IMPORT_FILES[$file_path]} ]] || continue
+        source "$file_path"
         BAUX_IMPORT_FILES[$file_path]="$file_path"
     done
 }
