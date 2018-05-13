@@ -13,22 +13,22 @@ source "$TEST_LICENSE_ABS_DIR/../license.sh"
 import "$TEST_LICENSE_ABS_DIR/../baux/lib/test.sh"
 
 test_license() {
-    mkdir -p test-license || die "Can not mkdir."
-    trap 'rm -rf test-license' RETURN EXIT SIGINT
+    tmp_dir=$(mktemp -d)
+    trap 'rm -rf $tmp_dir' RETURN EXIT SIGINT
 
-    run_ok '$status -eq 1 && $output == "Please give a license."' license
-    run_ok '$status -eq 0' license -h
-    run_ok '$status -eq 0' license -v
-    run_ok '$status -eq 0 && $output =~ "choosealicense"' license -c
-    run_ok '$status -eq 1 && $output =~ "not a directory"' license -d dir -l
-    run_ok '$status -eq 0' license -d test-license -u
-    run_ok '$status -eq 0 && $(echo $output | wc -l) -gt 0' license -d test-license -l
-    run_ok '$status -eq 0' license -d test-license mit
-    run_ok '$status -eq 0' license -d test-license gpl-3.0
-    run_ok '$status -eq 0 && $output =~ "XXXXXX"' license -d test-license -n XXXXXX mit
-    run_ok '$status -eq 0 && $output =~ "XXXXXX"' license -d test-license -y XXXXXX mit
-    run_ok '$status -eq 0 && -s test-license/test-mit' license -d test-license -o test-license/test-mit mit
-    run_ok '$status -eq 1 && $output =~ "already exists"' license -d test-license -o test-license/test-mit mit
+    run_ok "\$status -eq 1 && \$output == 'Please give a license.'" license
+    run_ok "\$status -eq 0" license -h
+    run_ok "\$status -eq 0" license -v
+    run_ok "\$status -eq 0 && \$output =~ choosealicense" license -c
+    run_ok "\$status -eq 1 && \$output =~ 'not a directory'" license -d dir -l
+    run_ok "\$status -eq 0" license -d "$tmp_dir" -u
+    run_ok "\$status -eq 0 && \$(echo \$output | wc -l) -gt 0" license -d "$tmp_dir" -l
+    run_ok "\$status -eq 0" license -d "$tmp_dir" mit
+    run_ok "\$status -eq 0" license -d "$tmp_dir" gpl-3.0
+    run_ok "\$status -eq 0 && \$output =~ XXXXXX" license -d "$tmp_dir" -n XXXXXX mit
+    run_ok "\$status -eq 0 && \$output =~ XXXXXX" license -d "$tmp_dir" -y XXXXXX mit
+    run_ok "\$status -eq 0 && -s $tmp_dir/test-mit" license -d "$tmp_dir" -o "$tmp_dir"/test-mit mit
+    run_ok "\$status -eq 1 && \$output =~ 'already exists'" license -d "$tmp_dir" -o "$tmp_dir"/test-mit mit
 }
 
 [[ ${FUNCNAME[0]} == "main" ]] \
