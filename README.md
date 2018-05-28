@@ -40,7 +40,6 @@ An opensource software license generator written in shell script base on [baux](
 > + [`sed`](https://www.gnu.org/software/sed/)
 > + [`curl`](https://curl.haxx.se/)
 > + [`jq`](https://stedolan.github.io/jq/)
-> + [`baux`](https://github.com/ishbguy/baux)
 
 ## :rocket: Installation
 
