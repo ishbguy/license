@@ -9,8 +9,8 @@
 declare -gr LICENSE_SOUECED=1
 declare -gr LICENSE_ABS_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
-source "$LICENSE_ABS_DIR"/baux/lib/baux.sh
-import "$LICENSE_ABS_DIR"/baux/lib/utili.sh
+source "$LICENSE_ABS_DIR"/../baux/lib/baux.sh
+import "$LICENSE_ABS_DIR"/../baux/lib/utili.sh
 
 LICENSE_CONFIG_FILE="${HOME}/.licenserc"
 declare -A LICENSE_CONFIGS

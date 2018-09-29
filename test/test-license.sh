@@ -9,7 +9,7 @@
 declare -gr TEST_LICENSE_SOURCED=1
 declare -gr TEST_LICENSE_ABS_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 
-source "$TEST_LICENSE_ABS_DIR/../license.sh"
+source "$TEST_LICENSE_ABS_DIR/../bin/license.sh"
 import "$TEST_LICENSE_ABS_DIR/../baux/lib/test.sh"
 
 test_license() {
