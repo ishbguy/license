@@ -131,9 +131,9 @@ gen_license() {
         echo -n >"$file" || die "Fail to create $file."
 
         # redirect stdout to $file
-        exec 3>"$file"
-        exec 1>&3
-        trap 'exec 3>&1; exec 3>&-' RETURN
+        exec 3>&1
+        exec 1>"$file"
+        trap 'exec 1>&3; exec 3>&-; trap "" RETURN' RETURN
     fi
 
     if [[ ${lic} == "mit" ||\
