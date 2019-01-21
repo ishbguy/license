@@ -183,7 +183,7 @@ license() {
     return "$BAUX_EXIT_CODE"
 }
 
-[[ ${FUNCNAME[0]} == "main" ]] \
+[[ ${FUNCNAME[0]} == "main" || ${FUNCNAME[0]} == '' ]] \
     && license "$@"
 
 # vim:ft=sh:ts=4:sw=4

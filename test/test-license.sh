@@ -31,7 +31,7 @@ test_license() {
     run_ok "\$status -eq 1 && \$output =~ 'already exists'" license -d "$tmp_dir" -o "$tmp_dir"/test-mit mit
 }
 
-[[ ${FUNCNAME[0]} == "main" ]] \
+[[ ${FUNCNAME[0]} == "main" || ${FUNCNAME[0]} == '' ]] \
     && test_license "$@" && summary
 
 # vim:set ft=sh ts=4 sw=4:
