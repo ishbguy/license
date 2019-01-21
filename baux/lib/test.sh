@@ -44,17 +44,17 @@ BAUX_TEST_COLORS[FAIL]="red"
 BAUX_TEST_COLORS[SKIP]="yellow"
 BAUX_TEST_COLORS[EMSG]="red"
 
-for s in "${!BAUX_TEST_COUNTS[@]}"; do
+for s in "${BAUX_TEST_PROMPTS[@]}"; do
     [[ ${#s} -gt $BAUX_TEST_STATUS_LEN ]] \
         && BAUX_TEST_STATUS_LEN=${#s}
 done
 
-for ((i = 1; i < BAUX_TEST_STATUS_LEN; i++)); do
+for ((i = 0; i < BAUX_TEST_STATUS_LEN; i++)); do
     BAUX_TEST_PAD_SPACES+=" "
 done
 
-__judge() {
-    local expr="$1"
+__count() {
+    local test_status="$1"
     ((++BAUX_TEST_COUNTS[TOTAL]))
     if [[ $BAUX_TEST_SKIP_FLAG -eq 1 ]]; then
         ((++BAUX_TEST_COUNTS[SKIP]))
@@ -62,7 +62,7 @@ __judge() {
         result="SKIP"
         return
     fi
-    if (eval "[[ $expr ]]" &>/dev/null); then
+    if [[ $test_status -eq 0 ]]; then
         ((++BAUX_TEST_COUNTS[PASS]))
         result="PASS"
     else
@@ -71,7 +71,7 @@ __judge() {
     fi
 }
 
-__issue() {
+__report() {
     local -u result="$1"
     local msg="$2"
 
@@ -81,7 +81,9 @@ __issue() {
 
 __location() {
     local idx="$(($1+1))"
-    local -a frame=($(frame "$idx"| sed -r 's/\s+/\n/g'))
+    local temp=$(frame "$idx")
+    eval set -- "$temp"
+    local -a frame=("$@")
     local cmd=$(sed -ne "${frame[1]}p" "${frame[0]}" 2>/dev/null | sed -r 's/^\s+//')
     echo "$cmd [${frame[0]}:${frame[1]}:${frame[3]}]"
 }
@@ -106,8 +108,9 @@ ok() {
     local expr="$1"
     local msg="${2:-$1}"
     local -u result
-    __judge "$expr"
-    __issue "$result" "$msg"
+    (eval "[[ $expr ]]" &>/dev/null)
+    __count $?
+    __report "$result" "$msg"
     [[ $result != "${BAUX_TEST_PROMPTS[FAIL]}" ]] \
         || { cecho "${BAUX_TEST_COLORS[EMSG]}" "$(__location 0)" >&2; return 1; }
 }
@@ -119,8 +122,9 @@ is() {
     local actual="$2"
     local msg="${3:-[[ $1 == $2 ]]}"
     local -u result
-    __judge "'$expect' == '$actual'"
-    __issue "$result" "$msg"
+    ([[ "$expect" == "$actual" ]] &>/dev/null)
+    __count $?
+    __report "$result" "$msg"
     __diag "$result" "'$expect'" "'$actual'" 
 }
 
@@ -131,8 +135,9 @@ isnt() {
     local actual="$2"
     local msg="${3:-[[ $1 != $2 ]]}"
     local -u result
-    __judge "'$expect' != '$actual'"
-    __issue "$result" "$msg"
+    ([[ "$expect" != "$actual" ]] &>/dev/null)
+    __count $?
+    __report "$result" "$msg"
     __diag "$result" "'$expect'" "'$actual'" 
 }
 
@@ -143,8 +148,9 @@ like() {
     local actual="$2"
     local msg="${3:-[[ $1 =~ $2 ]]}"
     local -u result
-    __judge "'$expect' =~ '$actual'"
-    __issue "$result" "$msg"
+    ([[ $expect =~ $actual ]] &>/dev/null)
+    __count $?
+    __report "$result" "$msg"
     __diag "$result" "'$expect'" "'$actual'" 
 }
 
@@ -155,8 +161,9 @@ unlike() {
     local actual="$2"
     local msg="${3:-[[ ! $1 =~ $2 ]]}"
     local -u result
-    __judge "! '$expect' =~ '$actual'"
-    __issue "$result" "$msg"
+    ([[ ! $expect =~ $actual ]] &>/dev/null)
+    __count $?
+    __report "$result" "$msg"
     __diag "$result" "'$expect'" "'$actual'" 
 }
 
@@ -170,16 +177,18 @@ run_ok() {
     local -u result
     local status output
     
-    output=$(eval "$@" 2>&1)
+    output=$("$@" 2>&1)
     status=$?
 
-    __judge "$expr"
-    __issue "$result" "$msg"
+    (eval "[[ $expr ]]" &>/dev/null)
+    __count $?
+    __report "$result" "$msg"
     [[ $result != "${BAUX_TEST_PROMPTS[FAIL]}" ]] \
         || { \
         cecho "${BAUX_TEST_COLORS[EMSG]}" "$BAUX_TEST_PAD_SPACES $(__location 0)" >&2; \
-        cecho "${BAUX_TEST_COLORS[EMSG]}" "$BAUX_TEST_PAD_SPACES Status: $status" >&2; \
-        cecho "${BAUX_TEST_COLORS[EMSG]}" "$BAUX_TEST_PAD_SPACES Output: '$output'" >&2; \
+        cecho "${BAUX_TEST_COLORS[EMSG]}" "$BAUX_TEST_PAD_SPACES expression: $expr" >&2; \
+        cecho "${BAUX_TEST_COLORS[EMSG]}" "$BAUX_TEST_PAD_SPACES status: $status" >&2; \
+        cecho "${BAUX_TEST_COLORS[EMSG]}" "$BAUX_TEST_PAD_SPACES output: '$output'" >&2; \
         return 1; }
 }
 
@@ -189,16 +198,8 @@ subtest() {
 
     local name="$1"
     local tests="$2"
-    local encode_name=$(echo "$name" | sed -r 's/[[:punct:][:space:]]/_/g')
+    local encode_name="${name//[^[:alnum:]]/_}"
     local err_msg status
-
-    eval "$encode_name() {
-        BAUX_TEST_COUNTS[TOTAL]=0
-        BAUX_TEST_COUNTS[PASS]=0
-        BAUX_TEST_COUNTS[FAIL]=0;
-        $tests
-        return \${BAUX_TEST_COUNTS[FAIL]}
-    }" &>/dev/null || die "subtest \"$name\" init fail."
 
     ((++BAUX_TEST_COUNTS[TOTAL]))
     echo -ne "$BAUX_TEST_PAD_SPACES ${BAUX_TEST_COUNTS[TOTAL]} subtest: $name "
@@ -211,14 +212,24 @@ subtest() {
         return 0
     fi
     # exec in sub shell for avoiding exit
-    err_msg=$(eval "$encode_name" 2>&1 >/dev/null)
+    err_msg=$(
+        eval "$encode_name() {
+            BAUX_TEST_COUNTS[TOTAL]=0
+            BAUX_TEST_COUNTS[PASS]=0
+            BAUX_TEST_COUNTS[FAIL]=0
+            $tests
+            return \${BAUX_TEST_COUNTS[FAIL]}
+        }" &>/dev/null || die "subtest \"$name\" init fail." 2>&1 >/dev/null
+
+        "$encode_name" 2>&1 >/dev/null
+    )
     status="$?"
     if [[ $status -eq 0 ]]; then
         ((++BAUX_TEST_COUNTS[PASS]))
-        cecho "${BAUX_TEST_COLORS[PASS]}" "\x1B[1G${BAUX_TEST_PROMPTS[PASS]}"
+        cecho "${BAUX_TEST_COLORS[PASS]}" "\\x1B[1G${BAUX_TEST_PROMPTS[PASS]}"
     else
         ((++BAUX_TEST_COUNTS[FAIL]))
-        cecho "${BAUX_TEST_COLORS[FAIL]}" "\x1B[1G${BAUX_TEST_PROMPTS[FAIL]}" >&2
+        cecho "${BAUX_TEST_COLORS[FAIL]}" "\\x1B[1G${BAUX_TEST_PROMPTS[FAIL]}" >&2
         cecho "${BAUX_TEST_COLORS[EMSG]}" "$BAUX_TEST_PAD_SPACES $(__location 0)" >&2
         echo -e "$err_msg" >&2
     fi
@@ -231,10 +242,13 @@ skip() {
 
 summary() {
     for it in TOTAL PASS FAIL SKIP; do
-        echo -n "$(cecho ${BAUX_TEST_COLORS[$it]} \
-            ${BAUX_TEST_PROMPTS[$it]}): ${BAUX_TEST_COUNTS[$it]}, "
+        echo -n "$(cecho "${BAUX_TEST_COLORS[$it]}" \
+            "${BAUX_TEST_PROMPTS[$it]}"): ${BAUX_TEST_COUNTS[$it]}, "
     done
-    echo
+    local -i percentage=0
+    [[ ${BAUX_TEST_COUNTS[TOTAL]} -ne 0 ]] \
+        && percentage=$((BAUX_TEST_COUNTS[PASS] * 100 / BAUX_TEST_COUNTS[TOTAL]))
+    echo "${percentage}% pass."
     return ${BAUX_TEST_COUNTS[FAIL]}
 }
 

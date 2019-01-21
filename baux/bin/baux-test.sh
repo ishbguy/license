@@ -20,7 +20,7 @@ declare -ga BAUX_TEST_SUIT_FILES
 declare -ga BAUX_TEST_SUIT_CASES
 
 is_shell_script() {
-    [[ -f "$1" && $(file "$1") =~ sh[[:alnum:]]*\ script ]]
+    [[ -f $1 && $1 == *.sh && $(file "$1") =~ sh[[:alnum:]]*\ script ]]
 }
 
 search_test_cases() {
@@ -37,7 +37,7 @@ add_test_file() {
 }
 
 add_test_dir() {
-    for file in $1/*; do
+    for file in $1/*.sh; do
         add_test_file "$file"
     done
 }
@@ -63,7 +63,7 @@ run_test_cases() {
 }
 
 baux_test() {
-    local -a opts args
+    local -A opts args
     getoptions opts args "hv" "$@"
     shift $((OPTIND - 1))
     [[ ${#@} -eq 0 ]] && usage && die "$(cecho red "Please give a test file!")"
@@ -76,7 +76,7 @@ baux_test() {
     summary
 }
 
-[[ ${FUNCNAME[0]} == "main" ]] \
+[[ ${FUNCNAME[0]} == "main" || ${FUNCNAME[0]} == '' ]] \
     && baux_test "$@"
 
 # vim:set ft=sh ts=4 sw=4:
