@@ -1,7 +1,11 @@
-TEST_DIR := $(shell pwd)/test
+TEST_DIR := $(PWD)/test
 
-all : test
+all : bats self
 
-.PHONY : test
-test :
-	bats $(TEST_DIR)
+.PHONY : bats
+bats :
+	bats $(TEST_DIR)/bats
+
+.PHONY : self
+self :
+	$(PWD)/bin/baux-test.sh $(TEST_DIR)/self
