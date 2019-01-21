@@ -1,9 +1,11 @@
 # [BAUX](https://github.com/ishbguy/baux)
 
-[![Travis][travissvg]][travis] [![Codacy][codacysvg]][codacy] [![Version][versvg]][ver] [![License][licsvg]][lic]
+[![Travis][travissvg]][travis] [![Codecov][codecovsvg]][codecov] [![Codacy][codacysvg]][codacy] [![Version][versvg]][ver] [![License][licsvg]][lic]
 
 [travissvg]: https://travis-ci.org/ishbguy/baux.svg?branch=master
 [travis]: https://travis-ci.org/ishbguy/baux
+[codecovsvg]: https://codecov.io/gh/ishbguy/baux/branch/master/graph/badge.svg
+[codecov]: https://codecov.io/gh/ishbguy/baux
 [codacysvg]: https://api.codacy.com/project/badge/Grade/9a7820362a97474b87652d1519714e1b
 [codacy]: https://www.codacy.com/app/ishbguy/baux?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ishbguy/baux&amp;utm_campaign=Badge_Grade
 [versvg]: https://img.shields.io/badge/version-v0.0.1-lightgrey.svg
@@ -75,11 +77,11 @@ lib
 
 ```bash
 except.sh
-    |
-    V
-array.sh    test.sh
-    |           |
-    V           V
+    |-----------------------------------------------+
+    V                                               |
+array.sh    test.sh                                 |
+    |           |-----------------------------------|
+    V           V                                   V
 var.sh      utili.sh    pattern.sh    log.sh      trace.sh
     |           |           |           |           |
     +-----------+-----------+-----------+-----------+
@@ -394,7 +396,7 @@ Run the above test script, will print the callstack to stdout like:
 #### Variable Type Check (`var.sh`)
 
 ```bash
-sorce /path/to/baux/lib/var.sh
+source /path/to/baux/lib/var.sh
 
 declare -a var
 
@@ -415,7 +417,7 @@ type_upper  var && echo "var's value has upper case attribute"
 ##### Simple test
 
 ```bash
-sorce /path/to/baux/lib/test.sh
+source /path/to/baux/lib/test.sh
 
 # ok $expr test is equivalent to [[ $expr ]]
 ok '1 == 1' 'Test equal'        # pass
@@ -447,7 +449,7 @@ summary
 ##### Run command test with `run_ok`
 
 ```bash
-sorce /path/to/baux/lib/test.sh
+source /path/to/baux/lib/test.sh
 
 # run_ok like ok, but run_ok provide $status, $output inside to test the
 # exit status and cmd output. When use these 2 variables, you need to single
@@ -473,7 +475,7 @@ summary
 `subtest` will group the your tests in a single sub-test, if one of the tests in `subtest` fails, the `subtest` will fail, and the total and fail counters will increase 1.
 
 ```bash
-sorce /path/to/baux/lib/test.sh
+source /path/to/baux/lib/test.sh
 
 # format like: subtest "test name" 'tests cmds'
 
@@ -488,7 +490,7 @@ summary
 ##### `skip` a following test
 
 ```bash
-sorce /path/to/baux/lib/test.sh
+source /path/to/baux/lib/test.sh
 
 is 1 1      # pass
 skip
@@ -503,7 +505,7 @@ summary
 You can customize test's total, pass, fail, skip prompt strings and colors.
 
 ```bash
-sorce /path/to/baux/lib/test.sh
+source /path/to/baux/lib/test.sh
 
 # these are default prompt strings
 BAUX_TEST_PROMPTS[TOTAL]="TOTAL"
