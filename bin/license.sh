@@ -140,6 +140,8 @@ gen_license() {
         ${lic} == "bsd-2-clause" ||\
         ${lic} == "bsd-3-clause" ]]; then
         eval "sed -r -e 's/\\[year\\]/${YEAR}/;s/\\[fullname\\]/${AUTHOR}/' ${LICENSE_DIR}/$lic"
+    elif [[ ${lic} =~ apache ]]; then
+        eval "sed -r -e 's/\\[yyyy\\]/${YEAR}/;s/\\[name of copyright owner\\]/${AUTHOR}/' ${LICENSE_DIR}/$lic"
     else
         cat "${LICENSE_DIR}/$lic"
     fi
